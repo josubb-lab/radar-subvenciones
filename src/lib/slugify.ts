@@ -10,5 +10,5 @@ export function slugify(text: string): string {
 }
 
 export function subvencionSlug(titulo: string, id: string): string {
-  return `${slugify(titulo).slice(0, 60)}-${id.slice(0, 8)}`
+  return `${slugify(titulo).slice(0, 60)}-${id}`
 }
