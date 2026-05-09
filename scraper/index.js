@@ -53,9 +53,23 @@ async function upsertSubvenciones(subvenciones) {
   const CHUNK = 50;
   let insertadas = 0;
   for (let i = 0; i < rows.length; i += CHUNK) {
-    const { error } = await supabase.from('hallazgos').insert(rows.slice(i, i + CHUNK));
-    if (error) console.error(`Error chunk ${i/CHUNK+1}: ${error.message}`);
-    else insertadas += Math.min(CHUNK, rows.length - i);
+    const chunk = rows.slice(i, i + CHUNK);
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/hallazgos`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify(chunk),
+    });
+    if (!res.ok) {
+      const msg = await res.text();
+      console.error(`Error chunk ${i/CHUNK+1}: ${res.status} | ${msg.slice(0, 200)}`);
+    } else {
+      insertadas += chunk.length;
+    }
   }
 
   console.log(`✓ ${insertadas} subvenciones insertadas.`);
