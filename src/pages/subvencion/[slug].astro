@@ -30,14 +30,30 @@ const fechaCierre = s.fecha_cierre
 const pageTitle = `${s.titulo} · Radar Subvenciones`
 const pageDesc  = s.descripcion?.slice(0, 160) ?? `Subvención publicada por ${s.organismo} en España.`
 
+const primerSector = s.sector?.[0]
+const sectorData   = primerSector ? slugToSector(primerSector) : null
+const canonicalUrl = `${SITE.siteUrl}/subvencion/${slug}`
+
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'GovernmentService',
-  name: s.titulo,
-  description: pageDesc,
-  provider: { '@type': 'GovernmentOrganization', name: s.organismo },
-  url: s.url,
-  areaServed: { '@type': 'Country', name: 'Spain' },
+  '@graph': [
+    {
+      '@type': 'GovernmentService',
+      name: s.titulo,
+      description: pageDesc,
+      provider: { '@type': 'GovernmentOrganization', name: s.organismo },
+      url: s.url,
+      areaServed: { '@type': 'Country', name: 'Spain' },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE.siteUrl },
+        ...(sectorData ? [{ '@type': 'ListItem', position: 2, name: `Subvenciones para ${sectorData.nombre}`, item: `${SITE.siteUrl}/sector/${primerSector}` }] : []),
+        { '@type': 'ListItem', position: sectorData ? 3 : 2, name: s.titulo, item: canonicalUrl },
+      ],
+    },
+  ],
 }
 ---
 

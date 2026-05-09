@@ -44,12 +44,23 @@ function tipoMeta(tipo: string) {
 
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  name: pageTitle,
-  description: pageDesc,
-  url: `${SITE.siteUrl}/sector/${sector}`,
-  inLanguage: 'es',
-  isPartOf: { '@type': 'WebSite', url: SITE.siteUrl },
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      name: pageTitle,
+      description: pageDesc,
+      url: `${SITE.siteUrl}/sector/${sector}`,
+      inLanguage: 'es',
+      isPartOf: { '@type': 'WebSite', url: SITE.siteUrl },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE.siteUrl },
+        { '@type': 'ListItem', position: 2, name: `Subvenciones para ${nombreSector}`, item: `${SITE.siteUrl}/sector/${sector}` },
+      ],
+    },
+  ],
 }
 ---
 
