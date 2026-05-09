@@ -89,6 +89,39 @@ async function marcarExpiradas() {
   else console.log(`${ids.length} subvenciones marcadas como inactivas.`);
 }
 
+async function publicarEnTelegram(subvenciones) {
+  const TOKEN   = process.env.TELEGRAM_TOKEN;
+  const CHANNEL = process.env.TELEGRAM_CHANNEL;
+  if (!TOKEN || !CHANNEL) return;
+
+  const top = subvenciones
+    .filter(s => s.titulo && s.url)
+    .slice(0, 5);
+
+  if (top.length === 0) return;
+
+  const fecha = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+  let msg = `📢 *Nuevas subvenciones — ${fecha}*\n\n`;
+  top.forEach((s, i) => {
+    const titulo = s.titulo.slice(0, 100).replace(/[_*[\]()~`>#+=|{}.!-]/g, '\\$&');
+    const ccaa   = s.ccaa?.[0] ? ` · ${s.ccaa[0]}` : '';
+    msg += `*${i + 1}\\. ${titulo}*${ccaa}\n[Ver convocatoria](${s.url})\n\n`;
+  });
+  msg += `🔍 [Ver todas en radar\\-subvenciones\\.es](https://radar-subvenciones.es)`;
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CHANNEL, text: msg, parse_mode: 'MarkdownV2', disable_web_page_preview: false }),
+    });
+    if (res.ok) console.log('✓ Telegram: mensaje publicado.');
+    else console.warn('Telegram error:', await res.text());
+  } catch (e) {
+    console.warn('Telegram error:', e.message);
+  }
+}
+
 async function main() {
   console.log(`\n=== Radar Subvenciones — fuente: ${fuenteArg} ===\n`);
 
@@ -98,6 +131,7 @@ async function main() {
 
   await upsertSubvenciones(todas);
   await marcarExpiradas();
+  await publicarEnTelegram(todas);
   console.log('\n=== Scraper finalizado ===');
 }
 
