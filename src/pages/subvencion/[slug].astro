@@ -1,25 +1,22 @@
 ---
 import Layout from '../../layouts/Layout.astro'
-import { createClient } from '@supabase/supabase-js'
 import { SITE } from '../../lib/config'
 import { slugToSector, slugToCCAA } from '../../lib/taxonomia'
 
 export const prerender = false
 
 const { slug } = Astro.params
-// UUID completo (36 chars) siempre al final del slug
-const uuid = slug?.slice(-36) ?? ''
+const prefix = slug?.split('-').pop() ?? ''
 
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_KEY,
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL?.replace(/\/$/, '')
+const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_KEY
+
+const res = await fetch(
+  `${SUPABASE_URL}/rest/v1/subvenciones?id=gte.${prefix}-0000-0000-0000-000000000000&id=lte.${prefix}-ffff-ffff-ffff-ffffffffffff&select=*&limit=1`,
+  { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
 )
-
-const { data: s } = await supabase
-  .from('subvenciones')
-  .select('*')
-  .eq('id', uuid)
-  .single()
+const rows = await res.json()
+const s = Array.isArray(rows) && rows.length > 0 ? rows[0] : null
 
 if (!s) return Astro.redirect('/404')
 
