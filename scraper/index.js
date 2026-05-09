@@ -7,7 +7,7 @@ import { createClient } from '@supabase/supabase-js';
 import { scrapearBOE }  from './fuente-boe.js';
 import { scrapearBDNS } from './fuente-bdns.js';
 
-const SUPABASE_URL = process.env.PUBLIC_SUPABASE_URL;
+const SUPABASE_URL = process.env.PUBLIC_SUPABASE_URL?.replace(/\/+$/, '');
 const SUPABASE_KEY = process.env.PUBLIC_SUPABASE_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_KEY) {
