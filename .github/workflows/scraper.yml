@@ -1,0 +1,41 @@
+name: Radar Subvenciones Scraper
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      fuente:
+        description: 'boe | bdns | todas  (vacío = todas)'
+        required: false
+        default: ''
+
+jobs:
+  scraper:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar scraper
+        run: |
+          ARGS=""
+          [ -n "${{ github.event.inputs.fuente }}" ] && ARGS="--fuente=${{ github.event.inputs.fuente }}"
+          node scraper/index.js $ARGS
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_KEY: ${{ secrets.PUBLIC_SUPABASE_KEY }}
+
+      - name: Rebuild Vercel
+        if: success()
+        continue-on-error: true
+        run: |
+          [ -n "${{ secrets.VERCEL_HOOK }}" ] && curl -X POST "${{ secrets.VERCEL_HOOK }}"

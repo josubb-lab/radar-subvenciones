@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Origen de los datos · Radar Subvenciones" description="Cómo y de dónde obtenemos la información sobre subvenciones y ayudas públicas.">
+  <div class="max-w-3xl mx-auto px-4 py-16">
+    <h1 class="text-2xl font-bold text-slate-100 mb-6">Origen de los datos</h1>
+
+    <div class="space-y-8 text-sm text-slate-400">
+
+      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <h2 class="text-base font-semibold text-slate-200 mb-2">BOE — Boletín Oficial del Estado</h2>
+        <p>Indexamos diariamente el BOE usando la API pública oficial del Gobierno de España. Extraemos las convocatorias de subvenciones, extractos y resoluciones publicadas.</p>
+        <a href="https://www.boe.es/buscar/api/boe.html" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:underline mt-2 block">→ API BOE</a>
+      </div>
+
+      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <h2 class="text-base font-semibold text-slate-200 mb-2">BDNS — Base de Datos Nacional de Subvenciones</h2>
+        <p>La BDNS es el registro público oficial de subvenciones gestionado por el Ministerio de Hacienda. Proporciona datos estructurados de todas las convocatorias con información de importe, organismo convocante y plazos.</p>
+        <a href="https://www.infosubvenciones.es" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:underline mt-2 block">→ infosubvenciones.es</a>
+      </div>
+
+      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <h2 class="text-base font-semibold text-slate-200 mb-2">Metodología</h2>
+        <p>El scraper se ejecuta diariamente a las 6:00 UTC. Los datos se almacenan en nuestra base de datos y se marcan como inactivos cuando caduca la fecha de solicitud. Toda la información original permanece enlazada a su fuente oficial.</p>
+      </div>
+
+    </div>
+  </div>
+</Layout>

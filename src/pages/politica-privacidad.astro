@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Política de privacidad · Radar Subvenciones" noindex={true}>
+  <div class="max-w-3xl mx-auto px-4 py-16">
+    <h1 class="text-2xl font-bold text-slate-100 mb-6">Política de privacidad</h1>
+    <p class="text-slate-400 text-sm mb-6">Última actualización: {new Date().toLocaleDateString('es-ES')}</p>
+
+    <div class="space-y-6 text-sm text-slate-400">
+      <p>Radar Subvenciones no recoge datos personales de los usuarios que navegan por el sitio, salvo cuando el usuario facilita voluntariamente su dirección de correo electrónico para recibir alertas.</p>
+
+      <h2 class="text-base font-semibold text-slate-200">Datos recogidos</h2>
+      <p>Únicamente el email facilitado voluntariamente para las alertas. No se ceden a terceros. Puede solicitar su eliminación en <a href="mailto:hola@radar-subvenciones.es" class="text-emerald-400 hover:underline">hola@radar-subvenciones.es</a>.</p>
+
+      <h2 class="text-base font-semibold text-slate-200">Cookies</h2>
+      <p>Este sitio puede usar cookies técnicas necesarias para el funcionamiento y cookies de análisis anónimas (Google Analytics). No se usan cookies de publicidad comportamental sin consentimiento.</p>
+
+      <h2 class="text-base font-semibold text-slate-200">Legislación aplicable</h2>
+      <p>RGPD (Reglamento UE 2016/679) y LOPD-GDD (Ley Orgánica 3/2018).</p>
+    </div>
+  </div>
+</Layout>

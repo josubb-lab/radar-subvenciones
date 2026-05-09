@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Aviso legal · Radar Subvenciones" noindex={true}>
+  <div class="max-w-3xl mx-auto px-4 py-16 prose prose-invert prose-slate">
+    <h1 class="text-2xl font-bold text-slate-100 mb-6">Aviso legal</h1>
+    <p class="text-slate-400 text-sm">Última actualización: {new Date().toLocaleDateString('es-ES')}</p>
+
+    <h2 class="text-lg font-semibold text-slate-200 mt-8 mb-3">Titular del sitio</h2>
+    <p class="text-slate-400 text-sm">Radar Subvenciones es un proyecto independiente sin ánimo de lucro cuya finalidad es divulgar información pública sobre subvenciones y ayudas en España.</p>
+
+    <h2 class="text-lg font-semibold text-slate-200 mt-8 mb-3">Propiedad intelectual</h2>
+    <p class="text-slate-400 text-sm">Los datos mostrados provienen de fuentes públicas oficiales (BOE, BDNS, boletines autonómicos). La información es de dominio público conforme al artículo 13 del Real Decreto Legislativo 1/1996.</p>
+
+    <h2 class="text-lg font-semibold text-slate-200 mt-8 mb-3">Limitación de responsabilidad</h2>
+    <p class="text-slate-400 text-sm">Este sitio agrega información pública con carácter informativo. No garantiza la exactitud, completitud o vigencia de los datos. Para información oficial consulte siempre las fuentes originales enlazadas.</p>
+
+    <h2 class="text-lg font-semibold text-slate-200 mt-8 mb-3">Contacto</h2>
+    <p class="text-slate-400 text-sm">Para cualquier consulta: <a href="mailto:hola@radar-subvenciones.es" class="text-emerald-400 hover:underline">hola@radar-subvenciones.es</a></p>
+  </div>
+</Layout>

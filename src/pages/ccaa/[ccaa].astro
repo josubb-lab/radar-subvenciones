@@ -1,0 +1,139 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import { createClient } from '@supabase/supabase-js'
+import { CCAA, slugToCCAA } from '../../lib/taxonomia'
+import { subvencionSlug } from '../../lib/slugify'
+import { SITE } from '../../lib/config'
+
+export function getStaticPaths() {
+  return CCAA.map(c => ({ params: { ccaa: c.slug } }))
+}
+
+const { ccaa }      = Astro.params
+const ccaaData       = slugToCCAA(ccaa)
+const nombreCCAA     = ccaaData?.nombre ?? ccaa
+
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_KEY,
+)
+
+const { data: subvenciones } = await supabase
+  .from('subvenciones')
+  .select('id, titulo, organismo, descripcion, importe_texto, fecha_pub, fecha_cierre, tipo, sector, url')
+  .eq('activa', true)
+  .contains('ccaa', [ccaa])
+  .order('fecha_pub', { ascending: false, nullsFirst: false })
+  .limit(100)
+
+const total = subvenciones?.length ?? 0
+
+const pageTitle = `Subvenciones en ${nombreCCAA} · Radar Subvenciones`
+const pageDesc  = `${total} convocatorias de subvenciones y ayudas públicas en ${nombreCCAA}. BOE y boletín oficial autonómico actualizados a diario.`
+
+const TIPO_META: Record<string, { label: string; color: string }> = {
+  convocatoria: { label: 'Convocatoria', color: 'text-emerald-400 bg-emerald-950/60 ring-emerald-700/50' },
+  extracto:     { label: 'Extracto BOE', color: 'text-sky-400 bg-sky-950/60 ring-sky-700/50' },
+  bases:        { label: 'Bases',         color: 'text-amber-400 bg-amber-950/60 ring-amber-700/50' },
+  resolucion:   { label: 'Resolución',   color: 'text-rose-400 bg-rose-950/60 ring-rose-700/50' },
+}
+function tipoMeta(tipo: string) {
+  return TIPO_META[tipo] ?? { label: tipo ?? 'Ayuda', color: 'text-slate-400 bg-slate-800 ring-slate-700/50' }
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: pageTitle,
+  description: pageDesc,
+  url: `${SITE.siteUrl}/ccaa/${ccaa}`,
+  inLanguage: 'es',
+  isPartOf: { '@type': 'WebSite', url: SITE.siteUrl },
+}
+---
+
+<Layout title={pageTitle} description={pageDesc} {jsonLd}>
+
+  <nav class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center gap-3">
+      <a href="/" class="flex items-center gap-2 text-slate-400 hover:text-slate-100 transition-colors text-sm font-medium">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Radar Subvenciones
+      </a>
+      <span class="text-slate-700">/</span>
+      <span class="text-slate-500 text-sm">{nombreCCAA}</span>
+    </div>
+  </nav>
+
+  <section class="bg-gradient-to-b from-emerald-950/20 to-slate-950 border-b border-slate-800/60">
+    <div class="max-w-5xl mx-auto px-4 py-12 lg:py-16">
+      <p class="text-emerald-400 text-xs font-semibold uppercase tracking-widest mb-3">Comunidad Autónoma</p>
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-50 leading-tight mb-3">
+        Subvenciones en {nombreCCAA}
+      </h1>
+      <p class="text-slate-400 text-base max-w-2xl">
+        {total} convocatorias activas en {nombreCCAA} — subvenciones del gobierno autonómico, estatal y fondos europeos publicadas en el BOE y boletín oficial.
+      </p>
+    </div>
+  </section>
+
+  <main class="max-w-5xl mx-auto px-4 py-10">
+    {(subvenciones ?? []).length === 0 ? (
+      <p class="text-slate-500 text-sm">No hay convocatorias registradas para esta comunidad ahora mismo. El radar actualiza diariamente.</p>
+    ) : (
+      <ol class="space-y-4">
+        {(subvenciones ?? []).map(s => {
+          const tm       = tipoMeta(s.tipo)
+          const fechaPub = s.fecha_pub
+            ? new Date(s.fecha_pub).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+            : null
+          const fechaCierre = s.fecha_cierre
+            ? new Date(s.fecha_cierre).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+            : null
+          const slug = subvencionSlug(s.titulo ?? '', s.id)
+          return (
+            <li class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 hover:border-slate-700 transition-colors">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 ${tm.color}`}>
+                  {tm.label}
+                </span>
+                {s.importe_texto && (
+                  <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 text-emerald-400 bg-emerald-950/60 ring-emerald-700/50">
+                    {s.importe_texto}
+                  </span>
+                )}
+                {fechaPub && <time class="text-xs text-slate-500 ml-auto">{fechaPub}</time>}
+              </div>
+              <a href={`/subvencion/${slug}`} class="block text-sm font-semibold text-slate-100 leading-snug mb-1 hover:text-emerald-400 transition-colors">
+                {s.titulo}
+              </a>
+              {s.organismo && <p class="text-xs text-slate-500 mb-2">{s.organismo}</p>}
+              {s.descripcion && (
+                <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                  {s.descripcion.slice(0, 200)}
+                </p>
+              )}
+              {fechaCierre && (
+                <p class="text-xs text-amber-500/80 mt-2">Plazo: hasta el {fechaCierre}</p>
+              )}
+            </li>
+          )
+        })}
+      </ol>
+    )}
+  </main>
+
+  <footer class="border-t border-slate-800/60 mt-10">
+    <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
+      <p>© {new Date().getFullYear()} Radar Subvenciones · Proyecto independiente</p>
+      <nav class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+        <a href="/origen-datos"        class="hover:text-slate-400 transition-colors">Fuentes</a>
+        <a href="/aviso-legal"         class="hover:text-slate-400 transition-colors">Aviso legal</a>
+        <a href="/politica-privacidad" class="hover:text-slate-400 transition-colors">Privacidad</a>
+      </nav>
+    </div>
+  </footer>
+
+</Layout>

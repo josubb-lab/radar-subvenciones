@@ -1,0 +1,15 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Política de cookies · Radar Subvenciones" noindex={true}>
+  <div class="max-w-3xl mx-auto px-4 py-16">
+    <h1 class="text-2xl font-bold text-slate-100 mb-6">Política de cookies</h1>
+    <p class="text-slate-400 text-sm mb-6">Última actualización: {new Date().toLocaleDateString('es-ES')}</p>
+    <div class="space-y-4 text-sm text-slate-400">
+      <p>Este sitio utiliza cookies técnicas necesarias para su funcionamiento y cookies de análisis anónimas.</p>
+      <p>Puede gestionar o rechazar las cookies desde la configuración de su navegador.</p>
+      <p>Para más información: <a href="/politica-privacidad" class="text-emerald-400 hover:underline">Política de privacidad</a>.</p>
+    </div>
+  </div>
+</Layout>

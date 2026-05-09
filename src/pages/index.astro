@@ -1,0 +1,238 @@
+---
+import Layout from '../layouts/Layout.astro'
+import { createClient } from '@supabase/supabase-js'
+import { SITE } from '../lib/config'
+import { SECTORES, CCAA } from '../lib/taxonomia'
+import { subvencionSlug } from '../lib/slugify'
+
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_KEY,
+)
+
+const { data: subvenciones } = await supabase
+  .from('subvenciones')
+  .select('id, titulo, organismo, descripcion, importe_texto, fecha_pub, fecha_cierre, plazo_texto, sector, ccaa, tipo, url')
+  .eq('activa', true)
+  .order('fecha_pub', { ascending: false, nullsFirst: false })
+  .limit(50)
+
+const total = subvenciones?.length ?? 0
+
+const TIPO_META: Record<string, { label: string; color: string }> = {
+  convocatoria: { label: 'Convocatoria',  color: 'text-emerald-400 bg-emerald-950/60 ring-emerald-700/50' },
+  extracto:     { label: 'Extracto BOE',  color: 'text-sky-400 bg-sky-950/60 ring-sky-700/50' },
+  bases:        { label: 'Bases',          color: 'text-amber-400 bg-amber-950/60 ring-amber-700/50' },
+  resolucion:   { label: 'Resolución',    color: 'text-rose-400 bg-rose-950/60 ring-rose-700/50' },
+}
+function tipoMeta(tipo: string) {
+  return TIPO_META[tipo] ?? { label: tipo ?? 'Ayuda', color: 'text-slate-400 bg-slate-800 ring-slate-700/50' }
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.nombre,
+  description: SITE.desc,
+  url: SITE.siteUrl,
+  inLanguage: 'es',
+}
+---
+
+<Layout jsonLd={jsonLd}>
+
+  <!-- NAV -->
+  <nav class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 font-bold text-slate-100 hover:text-emerald-400 transition-colors">
+        <span class="text-emerald-400">◈</span> Radar Subvenciones
+      </a>
+      <div class="hidden sm:flex items-center gap-6 text-sm text-slate-400">
+        <a href="/sector/autonomos"  class="hover:text-slate-100 transition-colors">Autónomos</a>
+        <a href="/sector/empresas"   class="hover:text-slate-100 transition-colors">Empresas</a>
+        <a href="/sector/empleo"     class="hover:text-slate-100 transition-colors">Empleo</a>
+        <a href="/sector/tecnologia" class="hover:text-slate-100 transition-colors">Tecnología</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="bg-gradient-to-b from-emerald-950/30 to-slate-950 border-b border-slate-800/60">
+    <div class="max-w-5xl mx-auto px-4 py-14 lg:py-20">
+      <p class="text-emerald-400 text-xs font-semibold uppercase tracking-widest mb-3">
+        Actualizado diariamente desde BOE y BDNS
+      </p>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-50 leading-tight mb-4">
+        Subvenciones y ayudas públicas<br class="hidden sm:block"> en España
+      </h1>
+      <p class="text-slate-400 text-lg max-w-2xl mb-8">
+        {total} convocatorias activas — autónomos, empresas, cultura, I+D, energía y más.
+        Todas las ayudas del BOE y boletines autonómicos en un solo lugar.
+      </p>
+
+      <!-- BUSCADOR POR SECTOR -->
+      <div class="flex flex-wrap gap-2">
+        {SECTORES.slice(0, 8).map(s => (
+          <a
+            href={`/sector/${s.slug}`}
+            class="px-3 py-1.5 rounded-full text-sm font-medium border border-slate-700 bg-slate-900 text-slate-300 hover:border-emerald-600 hover:text-emerald-400 transition-colors"
+          >
+            {s.nombre}
+          </a>
+        ))}
+        <a
+          href="/sectores"
+          class="px-3 py-1.5 rounded-full text-sm font-medium border border-slate-700 bg-slate-900 text-slate-500 hover:text-slate-300 transition-colors"
+        >
+          Ver todos →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-5xl mx-auto px-4 py-10 grid lg:grid-cols-[1fr_300px] gap-10">
+
+    <!-- LISTADO PRINCIPAL -->
+    <section>
+      <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-5">
+        Últimas convocatorias
+      </h2>
+
+      {(subvenciones ?? []).length === 0 ? (
+        <p class="text-slate-500 text-sm">El radar actualiza diariamente. Vuelve pronto.</p>
+      ) : (
+        <ol class="space-y-4">
+          {(subvenciones ?? []).map(s => {
+            const tm      = tipoMeta(s.tipo)
+            const fechaPub = s.fecha_pub
+              ? new Date(s.fecha_pub).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+              : null
+            const fechaCierre = s.fecha_cierre
+              ? new Date(s.fecha_cierre).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+              : null
+            const slug = subvencionSlug(s.titulo ?? '', s.id)
+            return (
+              <li class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 hover:border-slate-700 transition-colors">
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                  <span class={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 ${tm.color}`}>
+                    {tm.label}
+                  </span>
+                  {s.importe_texto && (
+                    <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 text-emerald-400 bg-emerald-950/60 ring-emerald-700/50">
+                      {s.importe_texto}
+                    </span>
+                  )}
+                  {fechaPub && <time class="text-xs text-slate-500 ml-auto">{fechaPub}</time>}
+                </div>
+
+                <a href={`/subvencion/${slug}`} class="block text-sm font-semibold text-slate-100 leading-snug mb-1 hover:text-emerald-400 transition-colors">
+                  {s.titulo}
+                </a>
+
+                {s.organismo && (
+                  <p class="text-xs text-slate-500 mb-2">{s.organismo}</p>
+                )}
+
+                {s.descripcion && (
+                  <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                    {s.descripcion.slice(0, 200)}
+                  </p>
+                )}
+
+                {fechaCierre && (
+                  <p class="text-xs text-amber-500/80 mt-2">
+                    Plazo: hasta el {fechaCierre}
+                  </p>
+                )}
+              </li>
+            )
+          })}
+        </ol>
+      )}
+    </section>
+
+    <!-- SIDEBAR -->
+    <aside class="space-y-6">
+
+      <!-- POR CCAA -->
+      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
+        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Por comunidad autónoma</h3>
+        <ul class="space-y-1">
+          {CCAA.map(c => (
+            <li>
+              <a href={`/ccaa/${c.slug}`} class="text-sm text-slate-400 hover:text-emerald-400 transition-colors block py-0.5">
+                {c.nombre}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- ALERTA EMAIL -->
+      <div class="rounded-xl border border-emerald-800/40 bg-emerald-950/30 p-5">
+        <p class="text-xs font-semibold text-emerald-500 uppercase tracking-widest mb-2">Alertas gratuitas</p>
+        <h3 class="text-sm font-bold text-emerald-300 mb-2">
+          Recibe subvenciones relevantes por email
+        </h3>
+        <p class="text-xs text-slate-400 mb-4">
+          Te avisamos cuando aparezcan nuevas convocatorias para tu sector o comunidad.
+        </p>
+        <a
+          href={`mailto:${import.meta.env.PUBLIC_SITE_URL ? 'hola@' + new URL(import.meta.env.PUBLIC_SITE_URL).hostname : 'hola@radar-subvenciones.es'}?subject=Alta%20alertas%20subvenciones`}
+          class="block text-center px-4 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-semibold transition-colors"
+        >
+          Suscribirme gratis
+        </a>
+      </div>
+
+      <!-- CTA GESTOR -->
+      <div class="rounded-xl border border-slate-700 bg-slate-900/50 p-5">
+        <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">¿Necesitas ayuda?</p>
+        <h3 class="text-sm font-bold text-slate-200 mb-2">
+          Gestores especializados en subvenciones
+        </h3>
+        <p class="text-xs text-slate-400 mb-4">
+          Solicitar una subvención tiene complejidad burocrática. Un gestor especializado maximiza tus probabilidades.
+        </p>
+        <div class="space-y-2">
+          <a
+            href="https://www.gestoriasdeempresa.com"
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            class="block text-center px-4 py-2 rounded-lg border border-slate-700 bg-slate-800 hover:border-emerald-600 hover:text-emerald-400 text-slate-300 text-xs font-semibold transition-colors"
+          >
+            Gestoría especializada
+          </a>
+          <a
+            href="https://www.enae.es"
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            class="block text-center px-4 py-2 rounded-lg border border-slate-700 bg-slate-800 hover:border-emerald-600 hover:text-emerald-400 text-slate-300 text-xs font-semibold transition-colors"
+          >
+            Consultoría ENAE
+          </a>
+        </div>
+      </div>
+
+      <!-- ADSENSE -->
+      <div class="min-h-[250px] rounded-xl border border-slate-800/40 bg-slate-900/20 flex items-center justify-center">
+        <p class="text-xs text-slate-700">Publicidad</p>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-800/60 mt-10">
+    <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
+      <p>© {new Date().getFullYear()} Radar Subvenciones · Proyecto independiente</p>
+      <nav class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+        <a href="/origen-datos"        class="hover:text-slate-400 transition-colors">Fuentes</a>
+        <a href="/aviso-legal"         class="hover:text-slate-400 transition-colors">Aviso legal</a>
+        <a href="/politica-privacidad" class="hover:text-slate-400 transition-colors">Privacidad</a>
+        <a href="/politica-cookies"    class="hover:text-slate-400 transition-colors">Cookies</a>
+      </nav>
+    </div>
+  </footer>
+
+</Layout>

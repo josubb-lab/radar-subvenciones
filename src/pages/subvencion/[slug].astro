@@ -1,0 +1,183 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import { createClient } from '@supabase/supabase-js'
+import { SITE } from '../../lib/config'
+import { subvencionSlug } from '../../lib/slugify'
+import { slugToSector, slugToCCAA } from '../../lib/taxonomia'
+
+export const prerender = false
+// SSR para detalle: demasiadas subvenciones para pre-generar todas
+
+const { slug } = Astro.params
+const id = slug?.split('-').pop() ?? ''
+
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_KEY,
+)
+
+const { data: s } = await supabase
+  .from('subvenciones')
+  .select('*')
+  .like('id', `${id}%`)
+  .single()
+
+if (!s) return Astro.redirect('/404')
+
+const fechaPub = s.fecha_pub
+  ? new Date(s.fecha_pub).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })
+  : null
+const fechaCierre = s.fecha_cierre
+  ? new Date(s.fecha_cierre).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })
+  : null
+
+const pageTitle = `${s.titulo} · Radar Subvenciones`
+const pageDesc  = s.descripcion?.slice(0, 160) ?? `Subvención publicada por ${s.organismo} en España.`
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'GovernmentService',
+  name: s.titulo,
+  description: pageDesc,
+  provider: { '@type': 'GovernmentOrganization', name: s.organismo },
+  url: s.url,
+  areaServed: { '@type': 'Country', name: 'Spain' },
+}
+---
+
+<Layout title={pageTitle} description={pageDesc} {jsonLd}>
+
+  <nav class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-4xl mx-auto px-4 h-14 flex items-center gap-3">
+      <a href="/" class="flex items-center gap-2 text-slate-400 hover:text-slate-100 transition-colors text-sm font-medium">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Radar Subvenciones
+      </a>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 py-10">
+
+    <article class="space-y-6">
+
+      <!-- CABECERA -->
+      <header>
+        <div class="flex flex-wrap gap-2 mb-4">
+          {s.tipo && (
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 text-emerald-400 bg-emerald-950/60 ring-emerald-700/50">
+              {s.tipo.charAt(0).toUpperCase() + s.tipo.slice(1)}
+            </span>
+          )}
+          {s.importe_texto && (
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 text-amber-400 bg-amber-950/60 ring-amber-700/50">
+              {s.importe_texto}
+            </span>
+          )}
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-50 leading-tight mb-3">
+          {s.titulo}
+        </h1>
+        {s.organismo && (
+          <p class="text-slate-400 text-base">{s.organismo}</p>
+        )}
+      </header>
+
+      <!-- DATOS CLAVE -->
+      <div class="grid sm:grid-cols-2 gap-4">
+        {fechaPub && (
+          <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+            <p class="text-xs text-slate-500 uppercase tracking-widest mb-1">Publicado</p>
+            <p class="text-sm font-semibold text-slate-200">{fechaPub}</p>
+          </div>
+        )}
+        {(fechaCierre || s.plazo_texto) && (
+          <div class="rounded-xl border border-amber-800/40 bg-amber-950/20 p-4">
+            <p class="text-xs text-amber-500 uppercase tracking-widest mb-1">Plazo de solicitud</p>
+            <p class="text-sm font-semibold text-amber-300">{fechaCierre ?? s.plazo_texto}</p>
+          </div>
+        )}
+      </div>
+
+      <!-- DESCRIPCIÓN -->
+      {s.descripcion && (
+        <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+          <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-3">Descripción</h2>
+          <p class="text-slate-300 text-sm leading-relaxed whitespace-pre-line">{s.descripcion}</p>
+        </div>
+      )}
+
+      <!-- SECTORES / CCAA -->
+      {((s.sector?.length > 0) || (s.ccaa?.length > 0)) && (
+        <div class="flex flex-wrap gap-2">
+          {(s.sector ?? []).map((sec: string) => {
+            const sd = slugToSector(sec)
+            return (
+              <a href={`/sector/${sec}`} class="text-xs px-3 py-1 rounded-full border border-slate-700 text-slate-400 hover:border-emerald-600 hover:text-emerald-400 transition-colors">
+                {sd?.nombre ?? sec}
+              </a>
+            )
+          })}
+          {(s.ccaa ?? []).map((ca: string) => {
+            const cd = slugToCCAA(ca)
+            return (
+              <a href={`/ccaa/${ca}`} class="text-xs px-3 py-1 rounded-full border border-slate-700 text-slate-400 hover:border-sky-600 hover:text-sky-400 transition-colors">
+                {cd?.nombre ?? ca}
+              </a>
+            )
+          })}
+        </div>
+      )}
+
+      <!-- ENLACE ORIGINAL -->
+      {s.url && (
+        <div class="rounded-xl border border-emerald-800/40 bg-emerald-950/20 p-5 flex items-center justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold text-emerald-500 uppercase tracking-widest mb-1">Fuente oficial</p>
+            <p class="text-sm text-slate-400 truncate max-w-xs">{s.url}</p>
+          </div>
+          <a
+            href={s.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-semibold transition-colors"
+          >
+            Ver convocatoria
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+        </div>
+      )}
+
+      <!-- CTA GESTOR -->
+      <div class="rounded-xl border border-slate-700 bg-slate-900/50 p-6">
+        <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">¿Necesitas ayuda con la solicitud?</p>
+        <h2 class="text-base font-bold text-slate-200 mb-2">Gestores especializados en subvenciones</h2>
+        <p class="text-sm text-slate-400 mb-4">
+          La tramitación de subvenciones tiene plazos estrictos y documentación específica. Un gestor especializado te ayuda a no perder ninguna oportunidad.
+        </p>
+        <a
+          href={`mailto:hola@radar-subvenciones.es?subject=Ayuda%20solicitud%20subvención&body=Me%20interesa%20la%20subvención:%20${encodeURIComponent(s.titulo)}`}
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-semibold transition-colors"
+        >
+          Solicitar ayuda gratuita
+        </a>
+      </div>
+
+    </article>
+
+  </main>
+
+  <footer class="border-t border-slate-800/60 mt-10">
+    <div class="max-w-4xl mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
+      <p>© {new Date().getFullYear()} Radar Subvenciones · Proyecto independiente</p>
+      <nav class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+        <a href="/aviso-legal"         class="hover:text-slate-400 transition-colors">Aviso legal</a>
+        <a href="/politica-privacidad" class="hover:text-slate-400 transition-colors">Privacidad</a>
+      </nav>
+    </div>
+  </footer>
+
+</Layout>

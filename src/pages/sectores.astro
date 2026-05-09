@@ -1,0 +1,39 @@
+---
+import Layout from '../layouts/Layout.astro'
+import { SECTORES } from '../lib/taxonomia'
+---
+
+<Layout
+  title="Todos los sectores · Radar Subvenciones"
+  description="Subvenciones y ayudas públicas por sector de actividad: autónomos, empresas, cultura, empleo, tecnología y más."
+>
+  <nav class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center gap-3">
+      <a href="/" class="flex items-center gap-2 text-slate-400 hover:text-slate-100 transition-colors text-sm font-medium">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Radar Subvenciones
+      </a>
+      <span class="text-slate-700">/</span>
+      <span class="text-slate-500 text-sm">Sectores</span>
+    </div>
+  </nav>
+
+  <main class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-2xl font-extrabold text-slate-50 mb-8">Subvenciones por sector</h1>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {SECTORES.map(s => (
+        <a
+          href={`/sector/${s.slug}`}
+          class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 hover:border-emerald-700 hover:bg-emerald-950/20 transition-colors group"
+        >
+          <h2 class="text-sm font-semibold text-slate-200 group-hover:text-emerald-400 transition-colors">
+            {s.nombre}
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">Ver convocatorias →</p>
+        </a>
+      ))}
+    </div>
+  </main>
+</Layout>
