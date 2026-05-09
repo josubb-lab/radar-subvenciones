@@ -58,6 +58,7 @@ async function marcarExpiradas() {
   const { error } = await supabase
     .from('subvenciones')
     .update({ activa: false })
+    .not('fecha_cierre', 'is', null)
     .lt('fecha_cierre', hoy)
     .eq('activa', true);
 
