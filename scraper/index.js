@@ -15,6 +15,9 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   process.exit(1);
 }
 
+console.log('URL:', SUPABASE_URL);
+console.log('KEY length:', SUPABASE_KEY?.length, '| starts:', SUPABASE_KEY?.slice(0, 10));
+
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const NICHO   = 'subvenciones';
 const fuenteArg = process.argv.find(a => a.startsWith('--fuente='))?.split('=')[1] ?? 'todas';
