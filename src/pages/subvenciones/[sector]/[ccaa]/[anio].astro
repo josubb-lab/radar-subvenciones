@@ -6,19 +6,20 @@ import { SECTORES, CCAA, slugToSector, slugToCCAA } from '../../../../lib/taxono
 import { subvencionSlug } from '../../../../lib/slugify'
 import { SITE } from '../../../../lib/config'
 
-const ANOS = ['2024', '2025', '2026']
-
 export function getStaticPaths() {
+  const anos = ['2024', '2025', '2026']
   const paths = []
   for (const sector of SECTORES) {
     for (const ccaa of CCAA) {
-      for (const anio of ANOS) {
+      for (const anio of anos) {
         paths.push({ params: { sector: sector.slug, ccaa: ccaa.slug, anio } })
       }
     }
   }
   return paths
 }
+
+const ANOS = ['2024', '2025', '2026']
 
 const { sector, ccaa, anio } = Astro.params
 const sectorData   = slugToSector(sector)
