@@ -51,6 +51,8 @@ const ogImage = `${SITE}/og-image.svg`
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
+    <link rel="alternate" type="application/rss+xml" title="Radar Subvenciones" href={`${SITE}/rss.xml`} />
+
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
   <body class="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500/30">

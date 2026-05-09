@@ -40,3 +40,12 @@ jobs:
         continue-on-error: true
         run: |
           [ -n "${{ secrets.VERCEL_HOOK }}" ] && curl -X POST "${{ secrets.VERCEL_HOOK }}"
+
+      - name: Ping sitemaps a Google y Bing
+        if: success()
+        continue-on-error: true
+        run: |
+          curl -s "https://www.google.com/ping?sitemap=https://radar-subvenciones.es/sitemap-index.xml"
+          curl -s "https://www.google.com/ping?sitemap=https://radar-subvenciones.es/sitemap-subvenciones.xml"
+          curl -s "https://www.bing.com/ping?sitemap=https://radar-subvenciones.es/sitemap-index.xml"
+          curl -s "https://www.bing.com/ping?sitemap=https://radar-subvenciones.es/sitemap-subvenciones.xml"
