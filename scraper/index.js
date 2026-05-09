@@ -55,15 +55,26 @@ async function upsertSubvenciones(subvenciones) {
 
 async function marcarExpiradas() {
   const hoy = new Date().toISOString().slice(0, 10);
+  // Seleccionar IDs expiradas primero (lt excluye nulls en PostgreSQL)
+  const { data: expiradas } = await supabase
+    .from('subvenciones')
+    .select('id')
+    .eq('activa', true)
+    .lt('fecha_cierre', hoy);
+
+  if (!expiradas || expiradas.length === 0) {
+    console.log('Sin subvenciones expiradas.');
+    return;
+  }
+
+  const ids = expiradas.map(r => r.id);
   const { error } = await supabase
     .from('subvenciones')
     .update({ activa: false })
-    .not('fecha_cierre', 'is', null)
-    .lt('fecha_cierre', hoy)
-    .eq('activa', true);
+    .in('id', ids);
 
   if (error) console.warn(`Error marcando expiradas: ${error.message}`);
-  else console.log('Expiradas marcadas como inactivas.');
+  else console.log(`${ids.length} expiradas marcadas como inactivas.`);
 }
 
 async function main() {
