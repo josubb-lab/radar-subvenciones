@@ -23,18 +23,28 @@ const fuenteArg = process.argv.find(a => a.startsWith('--fuente='))?.split('=')[
 async function upsertSubvenciones(subvenciones) {
   if (subvenciones.length === 0) return;
 
-  // Test de conexión con insert mínimo
+  // Test de conexión con fetch directo (bypasa el cliente JS)
   const testUrl = `https://test-diagnostico-${Date.now()}.internal`;
-  const { error: testErr } = await supabase
-    .from('subvenciones')
-    .insert({ titulo: 'diagnostico', url: testUrl });
-  if (testErr) {
-    console.error('ERROR DE CONEXIÓN/PERMISOS:', testErr.message);
-    console.error('Código:', testErr.code, '| Hint:', testErr.hint);
+  const rawRes = await fetch(`${SUPABASE_URL}/rest/v1/subvenciones`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Prefer': 'return=minimal',
+    },
+    body: JSON.stringify({ titulo: 'diagnostico', url: testUrl }),
+  });
+  const rawText = await rawRes.text();
+  console.log(`[TEST] Status: ${rawRes.status} | Body: ${rawText.slice(0, 300)}`);
+  if (!rawRes.ok) {
+    console.error('ERROR: insert directo fallido. Abortando.');
     return;
   }
-  // Borrar el test
-  await supabase.from('subvenciones').delete().eq('url', testUrl);
+  await fetch(`${SUPABASE_URL}/rest/v1/subvenciones?url=eq.${encodeURIComponent(testUrl)}`, {
+    method: 'DELETE',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` },
+  });
   console.log('✓ Conexión Supabase OK');
 
   // Obtener URLs existentes para no duplicar
