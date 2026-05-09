@@ -45,7 +45,6 @@ async function upsertSubvenciones(subvenciones) {
     importe_texto: s.importe_texto || null,
     fecha_pub:     s.fecha_pub || null,
     fecha_cierre:  s.fecha_cierre || null,
-    plazo_texto:   s.plazo_texto || null,
     url:           s.url,
     tipo:          s.tipo || 'convocatoria',
     sector:        s.sector?.length > 0 ? s.sector : [],
