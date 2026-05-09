@@ -115,7 +115,7 @@ async function scrapearPagina(pagina = 0) {
         url:           url || SEARCH_URL,
         tipo:          'convocatoria',
         sector:        inferirSectores(titulo, ''),
-        ccaa:          ['nacional'],
+        ccaa:          [normalizarCCAA(organismo)],
         fuente:        'BDNS',
       });
     });
