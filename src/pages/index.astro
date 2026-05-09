@@ -174,23 +174,26 @@ const jsonLd = {
               ? new Date(s.fecha_pub).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
               : null
             return (
-              <li class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 hover:border-slate-700 hover:border-l-emerald-600 border-l-2 border-l-slate-800 transition-colors">
-                <div class="flex flex-wrap items-center gap-2 mb-2">
-                  <span class={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 ${tm.color}`}>
-                    {tm.label}
-                  </span>
-                  {fecha && <time class="text-xs text-slate-500 ml-auto">{fecha}</time>}
+              <li class="rounded-xl border border-slate-800 bg-slate-900/50 hover:border-emerald-800/60 hover:bg-slate-900 transition-colors overflow-hidden flex">
+                <div class="w-1 bg-emerald-700/40 shrink-0 group-hover:bg-emerald-500"></div>
+                <div class="p-5 flex-1 min-w-0">
+                  <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <span class={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 ${tm.color}`}>
+                      {tm.label}
+                    </span>
+                    {fecha && <time class="text-xs text-slate-500 ml-auto">{fecha}</time>}
+                  </div>
+
+                  <a href={`/subvencion/${slug}`} class="block text-base font-semibold text-slate-100 leading-snug mb-2 hover:text-emerald-400 transition-colors">
+                    {s.titulo}
+                  </a>
+
+                  {s.descripcion && (
+                    <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                      {s.descripcion.slice(0, 200)}
+                    </p>
+                  )}
                 </div>
-
-                <a href={`/subvencion/${slug}`} class="block text-base font-semibold text-slate-100 leading-snug mb-1 hover:text-emerald-400 transition-colors">
-                  {s.titulo}
-                </a>
-
-                {s.descripcion && (
-                  <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
-                    {s.descripcion.slice(0, 200)}
-                  </p>
-                )}
               </li>
             )
           })}
