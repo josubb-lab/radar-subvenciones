@@ -5,13 +5,16 @@ import Layout from '../layouts/Layout.astro'
 
 <Layout title="Página no encontrada · Radar Subvenciones" noindex={true}>
   <nav class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
-    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center gap-3">
-      <a href="/" class="flex items-center gap-2 text-slate-400 hover:text-slate-100 transition-colors text-sm font-medium">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-        </svg>
-        Radar Subvenciones
+    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+      <a href="/" class="font-bold text-slate-100 hover:text-emerald-400 transition-colors text-sm">
+        <span class="text-emerald-400">◈</span> Radar Subvenciones
       </a>
+      <div class="hidden sm:flex items-center gap-5 text-sm text-slate-400">
+        <a href="/sector/autonomos"  class="hover:text-slate-100 transition-colors">Autónomos</a>
+        <a href="/sector/empresas"   class="hover:text-slate-100 transition-colors">Empresas</a>
+        <a href="/sector/empleo"     class="hover:text-slate-100 transition-colors">Empleo</a>
+        <a href="/guias"             class="hover:text-slate-100 transition-colors">Guías</a>
+      </div>
     </div>
   </nav>
 
@@ -23,4 +26,17 @@ import Layout from '../layouts/Layout.astro'
       Ver todas las subvenciones
     </a>
   </div>
+
+  <footer class="border-t border-slate-800/60 mt-10">
+    <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
+      <p>© {new Date().getFullYear()} Radar Subvenciones · Proyecto independiente</p>
+      <nav class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+        <a href="/origen-datos"        class="hover:text-slate-400 transition-colors">Fuentes</a>
+        <a href="/aviso-legal"         class="hover:text-slate-400 transition-colors">Aviso legal</a>
+        <a href="/politica-privacidad" class="hover:text-slate-400 transition-colors">Privacidad</a>
+        <a href="/politica-cookies"    class="hover:text-slate-400 transition-colors">Cookies</a>
+      </nav>
+    </div>
+  </footer>
+
 </Layout>

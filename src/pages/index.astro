@@ -36,16 +36,50 @@ function tipoMeta(tipo: string) {
 
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: SITE.nombre,
-  description: SITE.desc,
-  url: SITE.siteUrl,
-  inLanguage: 'es',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: { '@type': 'EntryPoint', urlTemplate: `${SITE.siteUrl}/sector/{search_term_string}` },
-    'query-input': 'required name=search_term_string',
-  },
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: SITE.nombre,
+      description: SITE.desc,
+      url: SITE.siteUrl,
+      inLanguage: 'es',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: { '@type': 'EntryPoint', urlTemplate: `${SITE.siteUrl}/sector/{search_term_string}` },
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: '¿Qué es una subvención pública en España?',
+          acceptedAnswer: { '@type': 'Answer', text: 'Una subvención pública es una ayuda económica concedida por organismos del Estado, comunidades autónomas o ayuntamientos a empresas, autónomos o particulares para financiar actividades de interés general, sin obligación de devolución.' },
+        },
+        {
+          '@type': 'Question',
+          name: '¿Dónde se publican las convocatorias de subvenciones en España?',
+          acceptedAnswer: { '@type': 'Answer', text: 'Las subvenciones estatales se publican en el Boletín Oficial del Estado (BOE) y en la Base de Datos Nacional de Subvenciones (BDNS). Cada comunidad autónoma tiene además su propio boletín oficial. Radar Subvenciones agrega todas estas fuentes en un solo lugar.' },
+        },
+        {
+          '@type': 'Question',
+          name: '¿Qué es el BDNS?',
+          acceptedAnswer: { '@type': 'Answer', text: 'El BDNS (Base de Datos Nacional de Subvenciones) es el registro oficial del Ministerio de Hacienda donde se publican todas las convocatorias de subvenciones y ayudas públicas en España.' },
+        },
+        {
+          '@type': 'Question',
+          name: '¿Quién puede solicitar subvenciones públicas en España?',
+          acceptedAnswer: { '@type': 'Answer', text: 'Pueden solicitar subvenciones personas físicas (autónomos, particulares), personas jurídicas (empresas, pymes, asociaciones, ONG) y entidades públicas, dependiendo de los requisitos de cada convocatoria.' },
+        },
+        {
+          '@type': 'Question',
+          name: '¿Con qué frecuencia se actualiza Radar Subvenciones?',
+          acceptedAnswer: { '@type': 'Answer', text: 'Radar Subvenciones se actualiza automáticamente cada día laborable extrayendo las nuevas convocatorias del BOE y el BDNS, por lo que siempre muestra las ayudas más recientes disponibles.' },
+        },
+      ],
+    },
+  ],
 }
 ---
 
