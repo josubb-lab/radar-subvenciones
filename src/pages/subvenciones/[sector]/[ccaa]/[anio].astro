@@ -1,24 +1,28 @@
 ---
 export const prerender = true
-import Layout from '../../../layouts/Layout.astro'
+import Layout from '../../../../layouts/Layout.astro'
 import { createClient } from '@supabase/supabase-js'
-import { SECTORES, CCAA, slugToSector, slugToCCAA } from '../../../lib/taxonomia'
-import { subvencionSlug } from '../../../lib/slugify'
-import { SITE } from '../../../lib/config'
+import { SECTORES, CCAA, slugToSector, slugToCCAA } from '../../../../lib/taxonomia'
+import { subvencionSlug } from '../../../../lib/slugify'
+import { SITE } from '../../../../lib/config'
+
+const ANOS = ['2024', '2025', '2026']
 
 export function getStaticPaths() {
   const paths = []
   for (const sector of SECTORES) {
     for (const ccaa of CCAA) {
-      paths.push({ params: { sector: sector.slug, ccaa: ccaa.slug } })
+      for (const anio of ANOS) {
+        paths.push({ params: { sector: sector.slug, ccaa: ccaa.slug, anio } })
+      }
     }
   }
   return paths
 }
 
-const { sector, ccaa } = Astro.params
-const sectorData  = slugToSector(sector)
-const ccaaData    = slugToCCAA(ccaa)
+const { sector, ccaa, anio } = Astro.params
+const sectorData   = slugToSector(sector)
+const ccaaData     = slugToCCAA(ccaa)
 const nombreSector = sectorData?.nombre ?? sector
 const nombreCCAA   = ccaaData?.nombre ?? ccaa
 
@@ -33,14 +37,16 @@ const { data: subvenciones } = await supabase
   .eq('activa', true)
   .contains('sector', [sector])
   .contains('ccaa', [ccaa])
+  .gte('fecha_pub', `${anio}-01-01`)
+  .lte('fecha_pub', `${anio}-12-31`)
   .order('fecha_pub', { ascending: false, nullsFirst: false })
   .limit(100)
 
 const total = subvenciones?.length ?? 0
 
-const pageTitle = `Subvenciones para ${nombreSector} en ${nombreCCAA} · Radar Subvenciones`
-const pageDesc  = `${total > 0 ? total : 'Últimas'} convocatorias de subvenciones y ayudas públicas para ${nombreSector} en ${nombreCCAA}. Actualizadas a diario desde el BOE y boletines autonómicos.`
-const pageUrl   = `${SITE.siteUrl}/subvenciones/${sector}/${ccaa}`
+const pageTitle = `Subvenciones para ${nombreSector} en ${nombreCCAA} ${anio} · Radar Subvenciones`
+const pageDesc  = `${total > 0 ? total : 'Últimas'} convocatorias de subvenciones y ayudas para ${nombreSector} en ${nombreCCAA} en ${anio}. Actualizadas a diario desde el BOE y boletines autonómicos.`
+const pageUrl   = `${SITE.siteUrl}/subvenciones/${sector}/${ccaa}/${anio}`
 
 const TIPO_META: Record<string, { label: string; color: string }> = {
   convocatoria: { label: 'Convocatoria', color: 'text-emerald-400 bg-emerald-950/60 ring-emerald-700/50' },
@@ -68,7 +74,8 @@ const jsonLd = {
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE.siteUrl },
         { '@type': 'ListItem', position: 2, name: `Subvenciones para ${nombreSector}`, item: `${SITE.siteUrl}/sector/${sector}` },
-        { '@type': 'ListItem', position: 3, name: nombreCCAA, item: pageUrl },
+        { '@type': 'ListItem', position: 3, name: nombreCCAA, item: `${SITE.siteUrl}/subvenciones/${sector}/${ccaa}` },
+        { '@type': 'ListItem', position: 4, name: anio, item: pageUrl },
       ],
     },
   ],
@@ -78,40 +85,38 @@ const jsonLd = {
 <Layout title={pageTitle} description={pageDesc} {jsonLd}>
 
   <nav class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
-    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center gap-2 text-sm">
-      <a href="/" class="text-slate-400 hover:text-slate-100 transition-colors font-medium">Radar Subvenciones</a>
+    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center gap-2 text-sm overflow-x-auto">
+      <a href="/" class="text-slate-400 hover:text-slate-100 transition-colors font-medium shrink-0">Radar Subvenciones</a>
       <span class="text-slate-700">/</span>
-      <a href={`/sector/${sector}`} class="text-slate-400 hover:text-slate-100 transition-colors">{nombreSector}</a>
+      <a href={`/sector/${sector}`} class="text-slate-400 hover:text-slate-100 transition-colors shrink-0">{nombreSector}</a>
       <span class="text-slate-700">/</span>
-      <span class="text-slate-500">{nombreCCAA}</span>
+      <a href={`/subvenciones/${sector}/${ccaa}`} class="text-slate-400 hover:text-slate-100 transition-colors shrink-0">{nombreCCAA}</a>
+      <span class="text-slate-700">/</span>
+      <span class="text-slate-500 shrink-0">{anio}</span>
     </div>
   </nav>
 
   <section class="bg-gradient-to-b from-emerald-950/20 to-slate-950 border-b border-slate-800/60">
     <div class="max-w-5xl mx-auto px-4 py-12 lg:py-16">
-      <p class="text-emerald-400 text-xs font-semibold uppercase tracking-widest mb-3">{nombreCCAA}</p>
+      <p class="text-emerald-400 text-xs font-semibold uppercase tracking-widest mb-3">{nombreCCAA} · {anio}</p>
       <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-50 leading-tight mb-3">
-        Subvenciones para {nombreSector} en {nombreCCAA}
+        Subvenciones para {nombreSector} en {nombreCCAA} {anio}
       </h1>
       <p class="text-slate-400 text-base max-w-2xl">
         {total > 0
-          ? `${total} convocatorias activas para ${nombreSector} en ${nombreCCAA}, actualizadas a diario desde el BOE y el boletín autonómico.`
-          : `Monitorizamos diariamente las convocatorias para ${nombreSector} en ${nombreCCAA}. Vuelve pronto o consulta las ayudas nacionales.`
+          ? `${total} convocatorias de ${anio} para ${nombreSector} en ${nombreCCAA}.`
+          : `No hay convocatorias registradas para ${nombreSector} en ${nombreCCAA} en ${anio}.`
         }
       </p>
 
       <div class="flex flex-wrap gap-2 mt-6">
-        {['2024','2025','2026'].map(a => (
+        {ANOS.filter(a => a !== anio).map(a => (
           <a href={`/subvenciones/${sector}/${ccaa}/${a}`} class="text-xs px-3 py-1 rounded-full border border-slate-700 text-slate-400 hover:border-emerald-600 hover:text-emerald-400 transition-colors">
             {a}
           </a>
         ))}
-        <span class="text-slate-700 text-xs px-1">·</span>
-        <a href={`/sector/${sector}`} class="text-xs px-3 py-1 rounded-full border border-slate-700 text-slate-500 hover:text-slate-300 transition-colors">
-          Todo {nombreSector} →
-        </a>
-        <a href={`/ccaa/${ccaa}`} class="text-xs px-3 py-1 rounded-full border border-slate-700 text-slate-500 hover:text-slate-300 transition-colors">
-          Todo {nombreCCAA} →
+        <a href={`/subvenciones/${sector}/${ccaa}`} class="text-xs px-3 py-1 rounded-full border border-slate-700 text-slate-400 hover:border-slate-500 transition-colors">
+          Todos los años
         </a>
       </div>
     </div>
@@ -120,11 +125,8 @@ const jsonLd = {
   <main class="max-w-5xl mx-auto px-4 py-10">
     {total === 0 ? (
       <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-8 text-center">
-        <p class="text-slate-400 text-sm mb-4">No hay convocatorias activas en este momento para {nombreSector} en {nombreCCAA}.</p>
-        <div class="flex flex-wrap gap-3 justify-center">
-          <a href={`/sector/${sector}`} class="text-sm text-emerald-400 hover:underline">Ver todas las ayudas para {nombreSector}</a>
-          <a href={`/ccaa/${ccaa}`} class="text-sm text-sky-400 hover:underline">Ver todas las ayudas en {nombreCCAA}</a>
-        </div>
+        <p class="text-slate-400 text-sm mb-4">No hay convocatorias registradas para {nombreSector} en {nombreCCAA} en {anio}.</p>
+        <a href={`/subvenciones/${sector}/${ccaa}`} class="text-sm text-emerald-400 hover:underline">Ver todos los años →</a>
       </div>
     ) : (
       <ol class="space-y-4">
