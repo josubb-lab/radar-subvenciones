@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#020617"/>
+      <stop offset="100%" style="stop-color:#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Borde superior verde -->
+  <rect width="1200" height="6" fill="url(#accent)"/>
+
+  <!-- Icono / logo mark -->
+  <text x="80" y="220" font-family="system-ui, sans-serif" font-size="72" fill="#10b981">◈</text>
+
+  <!-- Título principal -->
+  <text x="80" y="310" font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="800" fill="#f8fafc">Radar Subvenciones</text>
+
+  <!-- Subtítulo -->
+  <text x="80" y="385" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="400" fill="#94a3b8">Subvenciones y ayudas públicas en España</text>
+
+  <!-- Descripción -->
+  <text x="80" y="450" font-family="system-ui, -apple-system, sans-serif" font-size="26" font-weight="400" fill="#64748b">BOE · BDNS · Boletines autonómicos · Actualizado a diario</text>
+
+  <!-- URL -->
+  <text x="80" y="560" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="600" fill="#10b981">radar-subvenciones.es</text>
+
+  <!-- Línea decorativa derecha -->
+  <rect x="1100" y="80" width="2" height="470" fill="#1e293b"/>
+  <rect x="1120" y="120" width="2" height="390" fill="#0f172a" opacity="0.5"/>
+</svg>
