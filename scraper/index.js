@@ -69,6 +69,26 @@ async function upsertSubvenciones(subvenciones) {
   console.log(`✓ ${insertadas} subvenciones insertadas.`);
 }
 
+async function marcarExpiradas() {
+  const hoy = new Date().toISOString().slice(0, 10);
+  const { data: expiradas } = await supabase
+    .from('subvenciones')
+    .select('id')
+    .eq('activa', true)
+    .lt('fecha_cierre', hoy);
+
+  if (!expiradas || expiradas.length === 0) return;
+
+  const ids = expiradas.map(r => r.id);
+  const { error } = await supabase
+    .from('subvenciones')
+    .update({ activa: false })
+    .in('id', ids);
+
+  if (error) console.warn(`Error marcando expiradas: ${error.message}`);
+  else console.log(`${ids.length} subvenciones marcadas como inactivas.`);
+}
+
 async function main() {
   console.log(`\n=== Radar Subvenciones — fuente: ${fuenteArg} ===\n`);
 
@@ -77,6 +97,7 @@ async function main() {
   if (fuenteArg === 'bdns' || fuenteArg === 'todas') todas.push(...await scrapearBDNS());
 
   await upsertSubvenciones(todas);
+  await marcarExpiradas();
   console.log('\n=== Scraper finalizado ===');
 }
 
