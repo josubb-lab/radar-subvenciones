@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro'
 import { SITE } from '../../lib/config'
 import { slugToSector, slugToCCAA } from '../../lib/taxonomia'
+import NavBar from '../../components/NavBar.astro'
 
 export const prerender = false
 
@@ -61,19 +62,7 @@ const jsonLd = {
 
 <Layout title={pageTitle} description={pageDesc} ogType="article" {jsonLd}>
 
-  <nav class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
-    <div class="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
-      <a href="/" class="font-bold text-slate-100 hover:text-emerald-400 transition-colors text-sm">
-        <span class="text-emerald-400">◈</span> Radar Subvenciones
-      </a>
-      <div class="hidden sm:flex items-center gap-5 text-sm text-slate-400">
-        <a href="/sector/autonomos"  class="hover:text-slate-100 transition-colors">Autónomos</a>
-        <a href="/sector/empresas"   class="hover:text-slate-100 transition-colors">Empresas</a>
-        <a href="/sector/empleo"     class="hover:text-slate-100 transition-colors">Empleo</a>
-        <a href="/guias"             class="hover:text-slate-100 transition-colors">Guías</a>
-      </div>
-    </div>
-  </nav>
+  <NavBar />
 
   <main class="max-w-4xl mx-auto px-4 py-10">
 

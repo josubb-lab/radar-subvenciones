@@ -4,6 +4,7 @@ import Layout from '../../../../layouts/Layout.astro'
 import { createClient } from '@supabase/supabase-js'
 import { SECTORES, CCAA, slugToSector, slugToCCAA } from '../../../../lib/taxonomia'
 import { subvencionSlug } from '../../../../lib/slugify'
+import NavBar from '../../../../components/NavBar.astro'
 import { SITE } from '../../../../lib/config'
 
 export function getStaticPaths() {
@@ -85,27 +86,7 @@ const jsonLd = {
 
 <Layout title={pageTitle} description={pageDesc} {jsonLd} noindex={total === 0}>
 
-  <nav class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
-    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-      <div class="flex items-center gap-2 text-sm min-w-0">
-        <a href="/" class="font-bold text-slate-100 hover:text-emerald-400 transition-colors shrink-0">
-          <span class="text-emerald-400">◈</span> <span class="hidden lg:inline">Radar</span>
-        </a>
-        <span class="text-slate-700 shrink-0">/</span>
-        <a href={`/sector/${sector}`} class="text-slate-400 hover:text-slate-100 transition-colors truncate hidden sm:block">{nombreSector}</a>
-        <span class="text-slate-700 shrink-0 hidden sm:block">/</span>
-        <a href={`/subvenciones/${sector}/${ccaa}`} class="text-slate-400 hover:text-slate-100 transition-colors shrink-0">{nombreCCAA}</a>
-        <span class="text-slate-700 shrink-0">/</span>
-        <span class="text-slate-500 shrink-0">{anio}</span>
-      </div>
-      <div class="hidden md:flex items-center gap-5 text-sm text-slate-400 shrink-0 ml-4">
-        <a href="/sector/autonomos"  class="hover:text-slate-100 transition-colors">Autónomos</a>
-        <a href="/sector/empresas"   class="hover:text-slate-100 transition-colors">Empresas</a>
-        <a href="/sector/empleo"     class="hover:text-slate-100 transition-colors">Empleo</a>
-        <a href="/guias"             class="hover:text-slate-100 transition-colors">Guías</a>
-      </div>
-    </div>
-  </nav>
+  <NavBar breadcrumb={[{ label: nombreSector, href: `/sector/${sector}` }, { label: nombreCCAA, href: `/subvenciones/${sector}/${ccaa}` }, { label: anio }]} />
 
   <section class="bg-gradient-to-b from-emerald-950/20 to-slate-950 border-b border-slate-800/60">
     <div class="max-w-5xl mx-auto px-4 py-12 lg:py-16">

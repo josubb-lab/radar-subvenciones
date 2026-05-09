@@ -2,29 +2,14 @@
 export const prerender = true
 import Layout from '../layouts/Layout.astro'
 import { SECTORES } from '../lib/taxonomia'
+import NavBar from '../components/NavBar.astro'
 ---
 
 <Layout
   title="Todos los sectores · Radar Subvenciones"
   description="Subvenciones y ayudas públicas por sector de actividad: autónomos, empresas, cultura, empleo, tecnología y más."
 >
-  <nav class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
-    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-      <div class="flex items-center gap-2 text-sm">
-        <a href="/" class="font-bold text-slate-100 hover:text-emerald-400 transition-colors">
-          <span class="text-emerald-400">◈</span> Radar Subvenciones
-        </a>
-        <span class="text-slate-700">/</span>
-        <span class="text-slate-500">Sectores</span>
-      </div>
-      <div class="hidden sm:flex items-center gap-5 text-sm text-slate-400">
-        <a href="/sector/autonomos"  class="hover:text-slate-100 transition-colors">Autónomos</a>
-        <a href="/sector/empresas"   class="hover:text-slate-100 transition-colors">Empresas</a>
-        <a href="/sector/empleo"     class="hover:text-slate-100 transition-colors">Empleo</a>
-        <a href="/guias"             class="hover:text-slate-100 transition-colors">Guías</a>
-      </div>
-    </div>
-  </nav>
+  <NavBar breadcrumb={[{ label: 'Sectores' }]} />
 
   <main class="max-w-5xl mx-auto px-4 py-12">
     <h1 class="text-2xl font-extrabold text-slate-50 mb-8">Subvenciones por sector</h1>
