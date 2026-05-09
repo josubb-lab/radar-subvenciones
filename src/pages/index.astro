@@ -17,7 +17,12 @@ const { data: subvenciones } = await supabase
   .order('fecha_pub', { ascending: false, nullsFirst: false })
   .limit(50)
 
+const { count: totalBD } = await supabase
+  .from('subvenciones')
+  .select('*', { count: 'exact', head: true })
+
 const total = subvenciones?.length ?? 0
+const totalConvocatorias = totalBD ?? 0
 
 const TIPO_META: Record<string, { label: string; color: string }> = {
   convocatoria: { label: 'Convocatoria',  color: 'text-emerald-400 bg-emerald-950/60 ring-emerald-700/50' },
@@ -56,7 +61,8 @@ const jsonLd = {
         <a href="/sector/autonomos"  class="hover:text-slate-100 transition-colors">Autónomos</a>
         <a href="/sector/empresas"   class="hover:text-slate-100 transition-colors">Empresas</a>
         <a href="/sector/empleo"     class="hover:text-slate-100 transition-colors">Empleo</a>
-        <a href="/sector/tecnologia" class="hover:text-slate-100 transition-colors">Tecnología</a>
+        <a href="/guias"             class="hover:text-slate-100 transition-colors">Guías</a>
+        <a href="/quienes-somos"     class="hover:text-slate-100 transition-colors">Nosotros</a>
       </div>
     </div>
   </nav>
@@ -71,9 +77,29 @@ const jsonLd = {
         Subvenciones y ayudas públicas<br class="hidden sm:block"> en España
       </h1>
       <p class="text-slate-400 text-lg max-w-2xl mb-8">
-        {total} convocatorias activas — autónomos, empresas, cultura, I+D, energía y más.
-        Todas las ayudas del BOE y boletines autonómicos en un solo lugar.
+        Encuentra subvenciones y ayudas públicas para autónomos, empresas, cultura, I+D, energía y más.
+        Todas las convocatorias del BOE y boletines autonómicos en un solo lugar.
       </p>
+
+      <!-- ESTADÍSTICAS -->
+      <div class="flex flex-wrap gap-6 mb-8">
+        <div>
+          <p class="text-2xl font-extrabold text-emerald-400">{totalConvocatorias.toLocaleString('es-ES')}+</p>
+          <p class="text-xs text-slate-500 mt-0.5">convocatorias monitorizadas</p>
+        </div>
+        <div>
+          <p class="text-2xl font-extrabold text-emerald-400">17</p>
+          <p class="text-xs text-slate-500 mt-0.5">comunidades autónomas</p>
+        </div>
+        <div>
+          <p class="text-2xl font-extrabold text-emerald-400">Diario</p>
+          <p class="text-xs text-slate-500 mt-0.5">actualización automática</p>
+        </div>
+        <div>
+          <p class="text-2xl font-extrabold text-emerald-400">Gratis</p>
+          <p class="text-xs text-slate-500 mt-0.5">sin registro</p>
+        </div>
+      </div>
 
       <!-- BUSCADOR POR SECTOR -->
       <div class="flex flex-wrap gap-2">

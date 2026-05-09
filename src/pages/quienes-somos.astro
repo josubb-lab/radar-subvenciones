@@ -1,0 +1,114 @@
+---
+export const prerender = true
+import Layout from '../layouts/Layout.astro'
+import { SITE } from '../lib/config'
+
+const pageTitle = 'Quiénes somos · Radar Subvenciones'
+const pageDesc  = 'Radar Subvenciones es un proyecto independiente que monitoriza diariamente las subvenciones y ayudas públicas en España para acercarlas a autónomos, empresas y entidades.'
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      name: 'Radar Subvenciones',
+      url: SITE.siteUrl,
+      email: SITE.email,
+      description: pageDesc,
+      foundingDate: '2024',
+      areaServed: { '@type': 'Country', name: 'Spain' },
+      knowsAbout: ['Subvenciones públicas', 'Ayudas empresariales', 'BOE', 'BDNS'],
+    },
+    {
+      '@type': 'WebPage',
+      name: pageTitle,
+      url: `${SITE.siteUrl}/quienes-somos`,
+      inLanguage: 'es',
+    },
+  ],
+}
+---
+
+<Layout title={pageTitle} description={pageDesc} {jsonLd}>
+
+  <nav class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center gap-3">
+      <a href="/" class="flex items-center gap-2 text-slate-400 hover:text-slate-100 transition-colors text-sm font-medium">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Radar Subvenciones
+      </a>
+    </div>
+  </nav>
+
+  <div class="max-w-3xl mx-auto px-4 py-16">
+
+    <h1 class="text-3xl font-extrabold text-slate-100 mb-4">Quiénes somos</h1>
+    <p class="text-slate-400 text-base mb-12 leading-relaxed">
+      Radar Subvenciones es un proyecto independiente cuya misión es hacer accesible la información sobre ayudas y subvenciones públicas en España. Creemos que el desconocimiento es la principal razón por la que miles de autónomos, empresas y entidades dejan de solicitar ayudas a las que tienen derecho.
+    </p>
+
+    <div class="space-y-10">
+
+      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <h2 class="text-lg font-bold text-slate-100 mb-3">Nuestra misión</h2>
+        <p class="text-slate-400 text-sm leading-relaxed">
+          Monitorizamos diariamente el Boletín Oficial del Estado (BOE), la Base de Datos Nacional de Subvenciones (BDNS) y los boletines autonómicos para extraer, clasificar y publicar todas las convocatorias de subvenciones y ayudas públicas en España. Nuestro objetivo es que ninguna convocatoria pase desapercibida.
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <h2 class="text-lg font-bold text-slate-100 mb-3">Metodología</h2>
+        <ul class="space-y-3 text-sm text-slate-400">
+          <li class="flex gap-3">
+            <span class="text-emerald-400 font-bold shrink-0">01</span>
+            <span>Rastreamos diariamente a las 6:00 UTC más de 30 fuentes oficiales: BOE, BDNS y boletines de las 17 comunidades autónomas.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-emerald-400 font-bold shrink-0">02</span>
+            <span>Clasificamos automáticamente cada convocatoria por sector (empresas, autónomos, cultura, innovación…) y por comunidad autónoma.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-emerald-400 font-bold shrink-0">03</span>
+            <span>Marcamos como inactivas las convocatorias cuyo plazo de solicitud ha expirado para que siempre veas información vigente.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-emerald-400 font-bold shrink-0">04</span>
+            <span>Enlazamos siempre a la fuente oficial original. No somos intermediarios: toda la información la puedes verificar en el organismo convocante.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <h2 class="text-lg font-bold text-slate-100 mb-3">Independencia y transparencia</h2>
+        <p class="text-slate-400 text-sm leading-relaxed">
+          Somos un proyecto independiente sin vinculación con ningún organismo público ni gestoría. No cobramos comisiones por la información que publicamos. Nos financiamos a través de publicidad contextual y acuerdos con gestores especializados que compartimos como recomendación, nunca como obligación.
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-emerald-800/40 bg-emerald-950/20 p-6">
+        <h2 class="text-lg font-bold text-slate-100 mb-3">Contacto</h2>
+        <p class="text-slate-400 text-sm mb-4">
+          Para consultas, correcciones o colaboraciones:
+        </p>
+        <a href={`mailto:${SITE.email}`} class="text-emerald-400 hover:underline text-sm font-semibold">
+          {SITE.email}
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="border-t border-slate-800/60 mt-10">
+    <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
+      <p>© {new Date().getFullYear()} Radar Subvenciones · Proyecto independiente</p>
+      <nav class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+        <a href="/aviso-legal"         class="hover:text-slate-400 transition-colors">Aviso legal</a>
+        <a href="/politica-privacidad" class="hover:text-slate-400 transition-colors">Privacidad</a>
+        <a href="/origen-datos"        class="hover:text-slate-400 transition-colors">Fuentes</a>
+      </nav>
+    </div>
+  </footer>
+
+</Layout>

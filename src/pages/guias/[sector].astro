@@ -1,0 +1,252 @@
+---
+export const prerender = true
+import Layout from '../../layouts/Layout.astro'
+import { createClient } from '@supabase/supabase-js'
+import { SECTORES, slugToSector } from '../../lib/taxonomia'
+import { subvencionSlug } from '../../lib/slugify'
+import { SITE } from '../../lib/config'
+
+export function getStaticPaths() {
+  return SECTORES.map(s => ({ params: { sector: s.slug } }))
+}
+
+const { sector } = Astro.params
+const sectorData   = slugToSector(sector)
+const nombreSector = sectorData?.nombre ?? sector
+
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_KEY,
+)
+
+const { data: recientes } = await supabase
+  .from('subvenciones')
+  .select('id, titulo, organismo, fecha_pub, tipo, url')
+  .eq('activa', true)
+  .contains('sector', [sector])
+  .order('fecha_pub', { ascending: false, nullsFirst: false })
+  .limit(5)
+
+const pageTitle = `Cómo solicitar subvenciones para ${nombreSector} en España · Guía ${new Date().getFullYear()}`
+const pageDesc  = `Guía completa para acceder a subvenciones y ayudas públicas para ${nombreSector} en España. Requisitos, documentación, plazos y convocatorias activas.`
+const pageUrl   = `${SITE.siteUrl}/guias/${sector}`
+
+const CONTENIDO: Record<string, { intro: string; requisitos: string[]; documentos: string[]; consejos: string[]; faqs: { q: string; a: string }[] }> = {
+  autonomos: {
+    intro: 'Los autónomos y trabajadores por cuenta propia tienen acceso a un amplio catálogo de ayudas públicas en España, tanto a nivel estatal como autonómico. Desde bonificaciones en cuotas hasta subvenciones directas para la mejora de la actividad, conocer estas ayudas puede suponer un ahorro significativo.',
+    requisitos: ['Estar dado de alta en el RETA (Régimen Especial de Trabajadores Autónomos)', 'Estar al corriente de pago con la Seguridad Social y la Agencia Tributaria', 'No haber sido beneficiario de la misma ayuda en los últimos años (varía por convocatoria)', 'Desarrollar la actividad en el territorio de la convocatoria'],
+    documentos: ['DNI o NIE en vigor', 'Certificado de alta en el RETA', 'Certificado de estar al corriente con la AEAT', 'Certificado de estar al corriente con la Seguridad Social', 'Memoria de actividad o plan de negocio (según convocatoria)', 'Declaración responsable de no estar en situación de crisis'],
+    consejos: ['Revisa las convocatorias de tu comunidad autónoma, suelen tener más presupuesto que las nacionales', 'Solicita el certificado de estar al corriente con antelación, puede tardar varios días', 'Muchas ayudas son incompatibles entre sí — verifica antes de solicitar varias', 'Los plazos suelen ser cortos. Configura alertas para no perderte convocatorias'],
+    faqs: [
+      { q: '¿Puedo pedir varias subvenciones a la vez como autónomo?', a: 'Sí, siempre que no sean incompatibles entre sí. Cada convocatoria especifica si es compatible con otras ayudas. Es recomendable consultar con un gestor para maximizar las ayudas recibidas sin incurrir en incompatibilidades.' },
+      { q: '¿Cuánto tarda en resolverse una subvención para autónomos?', a: 'El plazo varía según la convocatoria, pero habitualmente entre 3 y 6 meses desde el cierre del plazo de solicitud. Algunas convocatorias autonómicas pueden resolver en menos tiempo.' },
+      { q: '¿Las subvenciones para autónomos tributan en el IRPF?', a: 'Generalmente sí, salvo excepciones. Las subvenciones se consideran rendimiento de actividad económica y deben incluirse en la declaración de la renta. Consulta con tu asesor fiscal.' },
+      { q: '¿Puedo solicitar subvenciones si llevo menos de un año como autónomo?', a: 'Depende de la convocatoria. Muchas ayudas a la creación de empresas y al autoempleo están específicamente diseñadas para nuevos autónomos. Otras requieren una antigüedad mínima de 1 o 2 años.' },
+    ],
+  },
+  empresas: {
+    intro: 'Las empresas y pymes españolas tienen a su disposición un amplio abanico de subvenciones y ayudas públicas para financiar proyectos de inversión, internacionalización, digitalización y creación de empleo. El acceso a estas ayudas puede marcar la diferencia en la competitividad de tu empresa.',
+    requisitos: ['Estar inscrita en el Registro Mercantil y tener CIF', 'No estar en situación de crisis empresarial según normativa europea', 'Estar al corriente con la AEAT y la Seguridad Social', 'Cumplir los límites de tamaño establecidos (microempresa, pequeña, mediana)'],
+    documentos: ['CIF y escrituras de constitución', 'Últimas cuentas anuales depositadas en el Registro Mercantil', 'Certificados de estar al corriente con AEAT y Seguridad Social', 'Memoria del proyecto a financiar', 'Presupuestos o facturas pro forma de las inversiones previstas'],
+    consejos: ['Las ayudas del Kit Digital están especialmente activas para pymes — revísalas', 'Para proyectos grandes, considera contratar un consultor de subvenciones (su coste suele ser menor que la subvención conseguida)', 'Guarda toda la documentación justificativa — la justificación es tan importante como la solicitud', 'Las convocatorias del CDTI son especialmente interesantes para empresas innovadoras'],
+    faqs: [
+      { q: '¿Qué diferencia hay entre subvención y préstamo bonificado?', a: 'La subvención es una ayuda a fondo perdido — no hay que devolverla. El préstamo bonificado sí hay que devolverlo pero con condiciones más favorables (menor tipo de interés, carencia, etc.). Muchas convocatorias mezclan ambos instrumentos.' },
+      { q: '¿Puede una empresa solicitar subvenciones si tiene pérdidas?', a: 'Depende de la convocatoria. Muchas excluyen empresas en situación de crisis (pérdidas superiores al 50% del capital). Sin embargo, hay ayudas específicas para empresas en dificultades. Revisa los requisitos de cada convocatoria.' },
+      { q: '¿Cuándo se paga la subvención?', a: 'El pago suele ser posterior a la ejecución del proyecto y su justificación. Algunas convocatorias permiten anticipos del 30-50%. Es importante planificar la tesorería sin contar con la subvención hasta que esté efectivamente cobrada.' },
+      { q: '¿Las subvenciones a empresas son compatibles con financiación bancaria?', a: 'Generalmente sí. La mayoría de subvenciones permiten complementarse con financiación privada. De hecho, muchas convocatorias exigen que la empresa aporte un porcentaje del coste total del proyecto.' },
+    ],
+  },
+  tecnologia: {
+    intro: 'El sector tecnológico y de digitalización concentra algunas de las ayudas públicas más importantes en España. Desde el Kit Digital hasta los fondos del CDTI y el PERTE Chip, las empresas tecnológicas y aquellas que quieran digitalizar su negocio tienen acceso a recursos significativos.',
+    requisitos: ['Desarrollar un proyecto de base tecnológica o digitalización', 'Para Kit Digital: ser pyme o autónomo con actividad económica', 'Para CDTI: tener carácter innovador y viabilidad técnica y económica', 'Estar al corriente con obligaciones fiscales y de Seguridad Social'],
+    documentos: ['Memoria técnica del proyecto de digitalización o innovación', 'Plan de empresa o business plan', 'Currículum del equipo técnico', 'Presupuesto detallado de la inversión tecnológica', 'Certificados habituales (AEAT, SS, Registro Mercantil)'],
+    consejos: ['El Kit Digital tramita a través de Agentes Digitalizadores — busca uno homologado en tu zona', 'El CDTI financia hasta el 85% de proyectos I+D — muy interesante para startups', 'Los fondos Next Generation EU tienen plazos definidos — actúa antes de que se agoten', 'Muchas CCAA tienen sus propias líneas de digitalización con menos competencia que las nacionales'],
+    faqs: [
+      { q: '¿Qué es el Kit Digital y quién puede solicitarlo?', a: 'El Kit Digital es una ayuda del Gobierno de España cofinanciada por fondos europeos Next Generation EU para digitalizar autónomos y pymes. Ofrece bonos de entre 2.000 y 12.000 euros según el tamaño de la empresa para contratar soluciones digitales de Agentes Digitalizadores homologados.' },
+      { q: '¿Qué proyectos financia el CDTI?', a: 'El Centro para el Desarrollo Tecnológico Industrial (CDTI) financia proyectos de I+D+i empresarial mediante préstamos parcialmente reembolsables con condiciones muy ventajosas. Financia desde proyectos de investigación industrial hasta desarrollo experimental y cooperación internacional.' },
+      { q: '¿Las startups pueden acceder a subvenciones de tecnología?', a: 'Sí. Existe un ecosistema de ayudas específico para startups: ENISA ofrece préstamos participativos, el CDTI tiene líneas para empresas emergentes, y muchas CCAA tienen fondos de capital semilla y aceleración.' },
+      { q: '¿Puedo recibir ayudas para implementar inteligencia artificial en mi empresa?', a: 'Sí. Varios programas contemplan específicamente la adopción de IA, machine learning y automatización. El Kit Digital incluye soluciones de IA, y convocatorias del CDTI y del PERTE Chip financian proyectos de desarrollo de IA.' },
+    ],
+  },
+}
+
+// Contenido genérico para sectores sin contenido específico
+const contenidoGenerico = {
+  intro: `Las subvenciones y ayudas públicas para ${nombreSector} en España provienen de múltiples organismos: el Estado, las comunidades autónomas, las diputaciones provinciales y los ayuntamientos. Conocer el catálogo completo y los requisitos de cada convocatoria es fundamental para aprovecharlas al máximo.`,
+  requisitos: [
+    'Estar al corriente de pago con la Agencia Tributaria',
+    'Estar al corriente de pago con la Seguridad Social',
+    'No estar incurso en prohibiciones para obtener la condición de beneficiario (artículo 13 LGS)',
+    'Cumplir los requisitos específicos de cada convocatoria',
+  ],
+  documentos: [
+    'DNI/NIE o CIF según corresponda',
+    'Certificado de estar al corriente con la AEAT',
+    'Certificado de estar al corriente con la Seguridad Social',
+    'Memoria o proyecto justificativo de la actividad a subvencionar',
+    'Presupuesto detallado de los gastos previstos',
+  ],
+  consejos: [
+    'Lee detenidamente las bases reguladoras antes de solicitar — los errores formales son motivo de exclusión',
+    'Solicita los certificados de estar al corriente con antelación, pueden tardar varios días hábiles',
+    'Guarda todos los justificantes de gastos — la justificación incorrecta puede exigir la devolución',
+    'Considera contratar un gestor especializado para convocatorias de gran cuantía',
+  ],
+  faqs: [
+    { q: `¿Qué subvenciones existen para ${nombreSector} en España?`, a: `Existen ayudas de ámbito estatal, autonómico y local. Las estatales se publican en el BOE y en la BDNS. Las autonómicas en los boletines oficiales de cada comunidad. En Radar Subvenciones monitorizamos todas diariamente para que no te pierdas ninguna.` },
+    { q: '¿Cuál es el plazo habitual para solicitar una subvención?', a: 'El plazo varía según la convocatoria, pero habitualmente oscila entre 15 y 60 días hábiles desde la publicación en el boletín oficial. Es imprescindible respetar el plazo — las solicitudes fuera de plazo son inadmitidas.' },
+    { q: '¿Puedo solicitar la subvención si ya he iniciado el proyecto?', a: 'En la mayoría de convocatorias no está permitido subvencionar gastos anteriores a la fecha de solicitud. Algunas convocatorias permiten gastos desde la fecha de publicación. Lee siempre las bases reguladoras antes de iniciar cualquier gasto.' },
+    { q: '¿Qué ocurre si me conceden la subvención pero no la justifico correctamente?', a: 'Si la justificación es incorrecta o incompleta, el organismo puede exigir el reintegro total o parcial de la subvención, con los correspondientes intereses de demora. En casos graves puede implicar sanciones adicionales.' },
+  ],
+}
+
+const contenido = CONTENIDO[sector] ?? contenidoGenerico
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      headline: pageTitle,
+      description: pageDesc,
+      url: pageUrl,
+      inLanguage: 'es',
+      publisher: { '@type': 'Organization', name: 'Radar Subvenciones', url: SITE.siteUrl },
+      dateModified: new Date().toISOString().slice(0, 10),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE.siteUrl },
+        { '@type': 'ListItem', position: 2, name: 'Guías', item: `${SITE.siteUrl}/guias` },
+        { '@type': 'ListItem', position: 3, name: nombreSector, item: pageUrl },
+      ],
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: contenido.faqs.map(f => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+}
+---
+
+<Layout title={pageTitle} description={pageDesc} {jsonLd}>
+
+  <nav class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center gap-2 text-sm">
+      <a href="/" class="text-slate-400 hover:text-slate-100 transition-colors shrink-0">Radar Subvenciones</a>
+      <span class="text-slate-700">/</span>
+      <a href="/guias" class="text-slate-400 hover:text-slate-100 transition-colors shrink-0">Guías</a>
+      <span class="text-slate-700">/</span>
+      <span class="text-slate-500 shrink-0">{nombreSector}</span>
+    </div>
+  </nav>
+
+  <section class="bg-gradient-to-b from-emerald-950/20 to-slate-950 border-b border-slate-800/60">
+    <div class="max-w-3xl mx-auto px-4 py-12 lg:py-16">
+      <p class="text-emerald-400 text-xs font-semibold uppercase tracking-widest mb-3">Guía {new Date().getFullYear()}</p>
+      <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-50 leading-tight mb-4">
+        Cómo solicitar subvenciones para {nombreSector} en España
+      </h1>
+      <p class="text-slate-400 text-base leading-relaxed">{contenido.intro}</p>
+    </div>
+  </section>
+
+  <main class="max-w-3xl mx-auto px-4 py-10 space-y-10">
+
+    <!-- REQUISITOS -->
+    <section>
+      <h2 class="text-lg font-bold text-slate-100 mb-4">Requisitos habituales</h2>
+      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <ul class="space-y-3">
+          {contenido.requisitos.map(r => (
+            <li class="flex gap-3 text-sm text-slate-400">
+              <span class="text-emerald-400 mt-0.5 shrink-0">✓</span>
+              <span>{r}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- DOCUMENTACIÓN -->
+    <section>
+      <h2 class="text-lg font-bold text-slate-100 mb-4">Documentación necesaria</h2>
+      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <ul class="space-y-3">
+          {contenido.documentos.map(d => (
+            <li class="flex gap-3 text-sm text-slate-400">
+              <span class="text-sky-400 mt-0.5 shrink-0">▸</span>
+              <span>{d}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- CONSEJOS -->
+    <section>
+      <h2 class="text-lg font-bold text-slate-100 mb-4">Consejos prácticos</h2>
+      <div class="space-y-3">
+        {contenido.consejos.map((c, i) => (
+          <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-4 flex gap-4">
+            <span class="text-2xl font-extrabold text-slate-700 shrink-0">{i + 1}</span>
+            <p class="text-sm text-slate-400 leading-relaxed">{c}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section>
+      <h2 class="text-lg font-bold text-slate-100 mb-4">Preguntas frecuentes</h2>
+      <div class="space-y-4">
+        {contenido.faqs.map(f => (
+          <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
+            <h3 class="text-sm font-semibold text-slate-200 mb-2">{f.q}</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- CONVOCATORIAS RECIENTES -->
+    {recientes && recientes.length > 0 && (
+      <section>
+        <h2 class="text-lg font-bold text-slate-100 mb-4">Convocatorias activas para {nombreSector}</h2>
+        <div class="space-y-3">
+          {recientes.map(s => {
+            const slug = subvencionSlug(s.titulo ?? '', s.id)
+            return (
+              <a href={`/subvencion/${slug}`} class="block rounded-xl border border-slate-800 bg-slate-900/50 p-4 hover:border-emerald-700 transition-colors">
+                <p class="text-sm font-semibold text-slate-100 hover:text-emerald-400 transition-colors mb-1">{s.titulo}</p>
+                {s.organismo && <p class="text-xs text-slate-500">{s.organismo}</p>}
+              </a>
+            )
+          })}
+        </div>
+        <a href={`/sector/${sector}`} class="block mt-4 text-sm text-emerald-400 hover:underline">
+          Ver todas las subvenciones para {nombreSector} →
+        </a>
+      </section>
+    )}
+
+  </main>
+
+  <footer class="border-t border-slate-800/60 mt-10">
+    <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
+      <p>© {new Date().getFullYear()} Radar Subvenciones · Proyecto independiente</p>
+      <nav class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+        <a href="/guias"               class="hover:text-slate-400 transition-colors">Guías</a>
+        <a href="/origen-datos"        class="hover:text-slate-400 transition-colors">Fuentes</a>
+        <a href="/aviso-legal"         class="hover:text-slate-400 transition-colors">Aviso legal</a>
+        <a href="/politica-privacidad" class="hover:text-slate-400 transition-colors">Privacidad</a>
+      </nav>
+    </div>
+  </footer>
+
+</Layout>

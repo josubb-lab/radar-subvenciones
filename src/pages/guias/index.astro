@@ -1,0 +1,64 @@
+---
+export const prerender = true
+import Layout from '../../layouts/Layout.astro'
+import { SECTORES } from '../../lib/taxonomia'
+import { SITE } from '../../lib/config'
+
+const pageTitle = 'Guías de subvenciones por sector · Radar Subvenciones'
+const pageDesc  = 'Guías completas sobre cómo solicitar subvenciones y ayudas públicas en España por sector: autónomos, empresas, agricultura, cultura, tecnología y más.'
+---
+
+<Layout title={pageTitle} description={pageDesc}>
+
+  <nav class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center gap-3">
+      <a href="/" class="flex items-center gap-2 text-slate-400 hover:text-slate-100 transition-colors text-sm font-medium">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Radar Subvenciones
+      </a>
+      <span class="text-slate-700">/</span>
+      <span class="text-slate-500 text-sm">Guías</span>
+    </div>
+  </nav>
+
+  <section class="bg-gradient-to-b from-emerald-950/20 to-slate-950 border-b border-slate-800/60">
+    <div class="max-w-5xl mx-auto px-4 py-12 lg:py-16">
+      <p class="text-emerald-400 text-xs font-semibold uppercase tracking-widest mb-3">Recursos</p>
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-50 leading-tight mb-3">
+        Guías para solicitar subvenciones
+      </h1>
+      <p class="text-slate-400 text-base max-w-2xl">
+        Todo lo que necesitas saber para acceder a las ayudas públicas según tu sector. Requisitos, plazos, documentación y consejos prácticos.
+      </p>
+    </div>
+  </section>
+
+  <main class="max-w-5xl mx-auto px-4 py-10">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {SECTORES.map(s => (
+        <a href={`/guias/${s.slug}`} class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 hover:border-emerald-700 transition-colors group">
+          <h2 class="text-sm font-semibold text-slate-100 group-hover:text-emerald-400 transition-colors mb-2">
+            Guía: {s.nombre}
+          </h2>
+          <p class="text-xs text-slate-500">
+            Cómo solicitar subvenciones para {s.nombre.toLowerCase()} en España →
+          </p>
+        </a>
+      ))}
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-800/60 mt-10">
+    <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
+      <p>© {new Date().getFullYear()} Radar Subvenciones · Proyecto independiente</p>
+      <nav class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+        <a href="/origen-datos"        class="hover:text-slate-400 transition-colors">Fuentes</a>
+        <a href="/aviso-legal"         class="hover:text-slate-400 transition-colors">Aviso legal</a>
+        <a href="/politica-privacidad" class="hover:text-slate-400 transition-colors">Privacidad</a>
+      </nav>
+    </div>
+  </footer>
+
+</Layout>
