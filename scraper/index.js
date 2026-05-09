@@ -1,6 +1,6 @@
 /**
  * scraper/index.js
- * Guarda subvenciones en la tabla hallazgos con nicho='subvenciones'.
+ * Guarda subvenciones en la tabla 'subvenciones' con todos los campos clasificados.
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -19,16 +19,14 @@ console.log('URL:', SUPABASE_URL);
 console.log('KEY length:', SUPABASE_KEY?.length, '| starts:', SUPABASE_KEY?.slice(0, 10));
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-const NICHO   = 'subvenciones';
 const fuenteArg = process.argv.find(a => a.startsWith('--fuente='))?.split('=')[1] ?? 'todas';
 
 async function upsertSubvenciones(subvenciones) {
   if (subvenciones.length === 0) return;
 
   const { data: existentes } = await supabase
-    .from('hallazgos')
-    .select('url')
-    .eq('nicho', NICHO);
+    .from('subvenciones')
+    .select('url');
 
   const urlsExistentes = new Set((existentes ?? []).map(r => r.url));
   const nuevas = subvenciones.filter(s => s.url && !urlsExistentes.has(s.url));
@@ -41,19 +39,26 @@ async function upsertSubvenciones(subvenciones) {
   console.log(`Insertando ${nuevas.length} subvenciones nuevas...`);
 
   const rows = nuevas.map(s => ({
-    nicho:       NICHO,
-    titulo:      s.titulo,
-    descripcion: [s.importe_texto, s.organismo, s.descripcion].filter(Boolean).join(' | ').slice(0, 500),
-    fuente:      s.fuente ?? 'BOE',
-    fecha:       s.fecha_pub ?? null,
-    url:         s.url,
+    titulo:        s.titulo,
+    organismo:     s.organismo || null,
+    descripcion:   s.descripcion?.slice(0, 1000) || null,
+    importe_texto: s.importe_texto || null,
+    fecha_pub:     s.fecha_pub || null,
+    fecha_cierre:  s.fecha_cierre || null,
+    plazo_texto:   s.plazo_texto || null,
+    url:           s.url,
+    tipo:          s.tipo || 'convocatoria',
+    sector:        s.sector?.length > 0 ? s.sector : [],
+    ccaa:          s.ccaa?.length > 0 ? s.ccaa : ['nacional'],
+    fuente:        s.fuente || 'BOE',
+    activa:        true,
   }));
 
   const CHUNK = 50;
   let insertadas = 0;
   for (let i = 0; i < rows.length; i += CHUNK) {
     const chunk = rows.slice(i, i + CHUNK);
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/hallazgos`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/subvenciones`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

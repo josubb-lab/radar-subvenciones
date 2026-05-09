@@ -52,6 +52,33 @@ function clasificarTipo(titulo = '') {
   return 'convocatoria';
 }
 
+const SECTORES_MAP = {
+  'autonomos':       ['autónomo', 'autonomo', 'emprendedor', 'cuenta propia', 'trabajador por cuenta'],
+  'empresas':        ['empresa', 'pyme', 'sociedad', 'industria', 'comercio'],
+  'agricultura':     ['agrícola', 'agricola', 'ganadería', 'ganaderia', 'rural', 'pesca', 'forestal', 'acuicultura'],
+  'cultura':         ['cultura', 'patrimonio', 'artes', 'cine', 'teatro', 'música', 'musica', 'libro'],
+  'deporte':         ['deporte', 'deportiv'],
+  'educacion':       ['educación', 'educacion', 'formación', 'formacion', 'beca', 'universidad', 'escolar'],
+  'empleo':          ['empleo', 'contratación', 'contratacion', 'inserción laboral', 'desempleo', 'laboral'],
+  'energia':         ['energía', 'energia', 'renovable', 'fotovoltaica', 'eficiencia energética', 'solar', 'eólica'],
+  'innovacion':      ['innovación', 'innovacion', 'investigación', 'investigacion', 'i+d', 'startup'],
+  'medio-ambiente':  ['medio ambiente', 'medioambiental', 'sostenibilidad', 'biodiversidad', 'residuos'],
+  'ong':             ['entidad sin ánimo', 'asociación', 'asociacion', 'ong', 'fundación', 'fundacion', 'voluntariado'],
+  'rehabilitacion':  ['rehabilitación', 'rehabilitacion', 'vivienda', 'edificio', 'construcción'],
+  'salud':           ['salud', 'sanitari', 'hospital', 'biomédica', 'biomedica', 'farmac'],
+  'tecnologia':      ['tecnología', 'tecnologia', 'digital', 'digitalización', 'software', 'inteligencia artificial'],
+  'turismo':         ['turismo', 'hostelería', 'hosteleria', 'hotel', 'alojamiento'],
+};
+
+function inferirSectores(titulo = '', desc = '') {
+  const t = (titulo + ' ' + desc).toLowerCase();
+  const sectores = [];
+  for (const [slug, kws] of Object.entries(SECTORES_MAP)) {
+    if (kws.some(kw => t.includes(kw))) sectores.push(slug);
+  }
+  return sectores.length > 0 ? sectores : ['empresas'];
+}
+
 const CCAA_KEYWORDS = {
   'andalucia':            ['andalucía', 'andalucia', 'junta de andalucía'],
   'aragon':               ['aragón', 'aragon'],
@@ -127,7 +154,7 @@ export async function scrapearBOE() {
         plazo_texto:   null,
         url,
         tipo:          clasificarTipo(titulo),
-        sector:        [],
+        sector:        inferirSectores(titulo, desc),
         ccaa:          inferirCCAA(texto),
         fuente:        'BOE',
       });

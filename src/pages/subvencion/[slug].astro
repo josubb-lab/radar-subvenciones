@@ -67,7 +67,7 @@ const jsonLd = {
         <div class="flex flex-wrap gap-2 mb-4">
           {s.tipo && (
             <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 text-emerald-400 bg-emerald-950/60 ring-emerald-700/50">
-              {s.tipo.charAt(0).toUpperCase() + s.tipo.slice(1)}
+              {s.tipo[0].toUpperCase() + s.tipo.slice(1)}
             </span>
           )}
           {s.importe_texto && (

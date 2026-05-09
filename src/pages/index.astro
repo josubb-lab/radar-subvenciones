@@ -11,10 +11,9 @@ const supabase = createClient(
 )
 
 const { data: subvenciones } = await supabase
-  .from('hallazgos')
-  .select('id, titulo, descripcion, fuente, fecha, url')
-  .eq('nicho', 'subvenciones')
-  .order('fecha', { ascending: false, nullsFirst: false })
+  .from('subvenciones')
+  .select('id, titulo, descripcion, fuente, tipo, fecha_pub, url')
+  .order('fecha_pub', { ascending: false, nullsFirst: false })
   .limit(50)
 
 const total = subvenciones?.length ?? 0
@@ -103,19 +102,21 @@ const jsonLd = {
       ) : (
         <ol class="space-y-4">
           {(subvenciones ?? []).map(s => {
-            const fecha = s.fecha
-              ? new Date(s.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+            const tm = tipoMeta(s.tipo)
+            const slug = subvencionSlug(s.titulo ?? '', s.id)
+            const fecha = s.fecha_pub
+              ? new Date(s.fecha_pub).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
               : null
             return (
               <li class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 hover:border-slate-700 transition-colors">
                 <div class="flex flex-wrap items-center gap-2 mb-2">
-                  <span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 text-emerald-400 bg-emerald-950/60 ring-emerald-700/50">
-                    {s.fuente ?? 'BOE'}
+                  <span class={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 ${tm.color}`}>
+                    {tm.label}
                   </span>
                   {fecha && <time class="text-xs text-slate-500 ml-auto">{fecha}</time>}
                 </div>
 
-                <a href={s.url} target="_blank" rel="noopener noreferrer" class="block text-sm font-semibold text-slate-100 leading-snug mb-1 hover:text-emerald-400 transition-colors">
+                <a href={`/subvencion/${slug}`} class="block text-sm font-semibold text-slate-100 leading-snug mb-1 hover:text-emerald-400 transition-colors">
                   {s.titulo}
                 </a>
 
