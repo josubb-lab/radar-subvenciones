@@ -24,21 +24,10 @@ const fuenteArg = process.argv.find(a => a.startsWith('--fuente='))?.split('=')[
 async function upsertSubvenciones(subvenciones) {
   if (subvenciones.length === 0) return;
 
-  const { data: existentes } = await supabase
-    .from('subvenciones')
-    .select('url');
+  const candidatas = subvenciones.filter(s => s.url);
+  console.log(`Procesando ${candidatas.length} subvenciones...`);
 
-  const urlsExistentes = new Set((existentes ?? []).map(r => r.url));
-  const nuevas = subvenciones.filter(s => s.url && !urlsExistentes.has(s.url));
-
-  if (nuevas.length === 0) {
-    console.log('Sin subvenciones nuevas.');
-    return;
-  }
-
-  console.log(`Insertando ${nuevas.length} subvenciones nuevas...`);
-
-  const rows = nuevas.map(s => ({
+  const rows = candidatas.map(s => ({
     titulo:        s.titulo,
     organismo:     s.organismo || null,
     descripcion:   s.descripcion?.slice(0, 1000) || null,
@@ -63,7 +52,7 @@ async function upsertSubvenciones(subvenciones) {
         'Content-Type': 'application/json',
         'apikey': SUPABASE_KEY,
         'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Prefer': 'return=minimal',
+        'Prefer': 'return=minimal,resolution=ignore-duplicates',
       },
       body: JSON.stringify(chunk),
     });
