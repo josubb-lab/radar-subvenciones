@@ -1,8 +1,3 @@
-/**
- * fuente-boe.js
- * Busca convocatorias del BOE via Google News RSS.
- */
-
 import Parser from 'rss-parser';
 
 const DELAY_MS = 1_400;
@@ -13,80 +8,76 @@ const rssParser = new Parser({
   headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1)' },
 });
 
+// Cada query lleva su CCAA implícita (null = nacional/detectar por texto)
 const QUERIES = [
-  // Nacionales
-  'extracto convocatoria subvenciones BOE site:boe.es',
-  'convocatoria subvenciones ayudas BOE España 2025',
-  'extracto orden subvenciones ministerio BOE',
-  'bases reguladoras subvenciones BOE convocatoria',
-  'convocatoria becas ayudas BOE resolución',
-  'programa ayudas subvenciones gobierno España BOE',
-  'real decreto subvenciones convocatoria BOE España',
-  'orden subvenciones autónomos empresas BOE España',
-  'subvenciones energía renovable convocatoria BOE',
-  'ayudas digitalización empresas pymes BOE convocatoria',
-  'subvenciones cultura deporte BOE convocatoria',
-  'ayudas empleo contratación BOE convocatoria',
-  // Por CCAA
-  'convocatoria subvenciones ayudas "Junta de Andalucía"',
-  'convocatoria subvenciones ayudas "Gobierno de Aragón"',
-  'convocatoria subvenciones ayudas "Principado de Asturias"',
-  'convocatoria subvenciones ayudas "Govern de les Illes Balears"',
-  'convocatoria subvenciones ayudas "Gobierno de Canarias"',
-  'convocatoria subvenciones ayudas "Gobierno de Cantabria"',
-  'convocatoria subvenciones ayudas "Junta de Castilla-La Mancha"',
-  'convocatoria subvenciones ayudas "Junta de Castilla y León"',
-  'convocatoria subvenciones ayudas "Generalitat de Catalunya"',
-  'convocatoria subvenciones ayudas "Generalitat Valenciana"',
-  'convocatoria subvenciones ayudas "Junta de Extremadura"',
-  'convocatoria subvenciones ayudas "Xunta de Galicia"',
-  'convocatoria subvenciones ayudas "Gobierno de La Rioja"',
-  'convocatoria subvenciones ayudas "Comunidad de Madrid"',
-  'convocatoria subvenciones ayudas "Región de Murcia"',
-  'convocatoria subvenciones ayudas "Gobierno de Navarra"',
-  'convocatoria subvenciones ayudas "Gobierno Vasco" OR "Eusko Jaurlaritza"',
+  { q: 'extracto convocatoria subvenciones BOE site:boe.es',             ccaa: null },
+  { q: 'convocatoria subvenciones ayudas BOE España 2025',               ccaa: null },
+  { q: 'extracto orden subvenciones ministerio BOE',                     ccaa: null },
+  { q: 'bases reguladoras subvenciones BOE convocatoria',                ccaa: null },
+  { q: 'convocatoria becas ayudas BOE resolución',                       ccaa: null },
+  { q: 'programa ayudas subvenciones gobierno España BOE',               ccaa: null },
+  { q: 'real decreto subvenciones convocatoria BOE España',              ccaa: null },
+  { q: 'orden subvenciones autónomos empresas BOE España',               ccaa: null },
+  { q: 'subvenciones energía renovable convocatoria BOE',                ccaa: null },
+  { q: 'ayudas digitalización empresas pymes BOE convocatoria',          ccaa: null },
+  { q: 'subvenciones cultura deporte BOE convocatoria',                  ccaa: null },
+  { q: 'ayudas empleo contratación BOE convocatoria',                    ccaa: null },
+  { q: 'convocatoria subvenciones ayudas "Junta de Andalucía"',          ccaa: 'andalucia' },
+  { q: 'convocatoria subvenciones ayudas BOJA Andalucía',                ccaa: 'andalucia' },
+  { q: 'convocatoria subvenciones ayudas "Gobierno de Aragón"',          ccaa: 'aragon' },
+  { q: 'convocatoria subvenciones ayudas "Principado de Asturias"',      ccaa: 'asturias' },
+  { q: 'convocatoria subvenciones ayudas "Govern Illes Balears"',        ccaa: 'baleares' },
+  { q: 'convocatoria subvenciones ayudas "Gobierno de Canarias"',        ccaa: 'canarias' },
+  { q: 'convocatoria subvenciones ayudas "Gobierno de Cantabria"',       ccaa: 'cantabria' },
+  { q: 'convocatoria subvenciones ayudas "Junta de Castilla-La Mancha"', ccaa: 'castilla-la-mancha' },
+  { q: 'convocatoria subvenciones ayudas "Junta de Castilla y León"',    ccaa: 'castilla-y-leon' },
+  { q: 'convocatoria subvenciones ayudas "Generalitat de Catalunya"',    ccaa: 'cataluna' },
+  { q: 'convocatoria subvenciones ayudas DOGC Catalunya',                ccaa: 'cataluna' },
+  { q: 'convocatoria subvenciones ayudas "Generalitat Valenciana"',      ccaa: 'comunidad-valenciana' },
+  { q: 'convocatoria subvenciones ayudas "Junta de Extremadura"',        ccaa: 'extremadura' },
+  { q: 'convocatoria subvenciones ayudas "Xunta de Galicia"',            ccaa: 'galicia' },
+  { q: 'convocatoria subvenciones ayudas "Gobierno de La Rioja"',        ccaa: 'la-rioja' },
+  { q: 'convocatoria subvenciones ayudas "Comunidad de Madrid"',         ccaa: 'madrid' },
+  { q: 'convocatoria subvenciones ayudas "Región de Murcia"',            ccaa: 'murcia' },
+  { q: 'convocatoria subvenciones ayudas "Gobierno de Navarra"',         ccaa: 'navarra' },
+  { q: 'convocatoria subvenciones ayudas "Gobierno Vasco" OR Euskadi',   ccaa: 'pais-vasco' },
 ];
 
-const KEYWORDS_OK = [
-  'subvenci', 'convocatoria', 'ayuda', 'beca', 'extracto', 'bases reguladoras',
-];
-const KEYWORDS_NOK = [
-  'oposici', 'proceso selectivo', 'concurso traslado', 'personal laboral',
-  'declaración', 'nombramiento', 'cese', 'resolución de recurso',
-];
+const KEYWORDS_OK  = ['subvenci', 'convocatoria', 'ayuda', 'beca', 'extracto', 'bases reguladoras'];
+const KEYWORDS_NOK = ['oposici', 'proceso selectivo', 'concurso traslado', 'personal laboral',
+                      'declaración', 'nombramiento', 'cese', 'resolución de recurso'];
 
 function esRelevante(titulo = '', desc = '') {
   const t = (titulo + ' ' + desc).toLowerCase();
-  return (
-    KEYWORDS_OK.some(kw => t.includes(kw)) &&
-    !KEYWORDS_NOK.some(kw => t.includes(kw))
-  );
+  return KEYWORDS_OK.some(kw => t.includes(kw)) && !KEYWORDS_NOK.some(kw => t.includes(kw));
 }
 
 function clasificarTipo(titulo = '') {
   const t = titulo.toLowerCase();
-  if (t.includes('extracto')) return 'extracto';
+  if (t.includes('extracto'))          return 'extracto';
   if (t.includes('bases reguladoras')) return 'bases';
-  if (t.includes('resoluci')) return 'resolucion';
+  if (t.includes('resoluci'))          return 'resolucion';
   return 'convocatoria';
 }
 
 const SECTORES_MAP = {
-  'autonomos':       ['autónomo', 'autonomo', 'emprendedor', 'cuenta propia', 'trabajador por cuenta'],
-  'empresas':        ['empresa', 'pyme', 'sociedad', 'industria', 'comercio'],
-  'agricultura':     ['agrícola', 'agricola', 'ganadería', 'ganaderia', 'rural', 'pesca', 'forestal', 'acuicultura'],
-  'cultura':         ['cultura', 'patrimonio', 'artes', 'cine', 'teatro', 'música', 'musica', 'libro'],
-  'deporte':         ['deporte', 'deportiv'],
-  'educacion':       ['educación', 'educacion', 'formación', 'formacion', 'beca', 'universidad', 'escolar'],
-  'empleo':          ['empleo', 'contratación', 'contratacion', 'inserción laboral', 'desempleo', 'laboral'],
-  'energia':         ['energía', 'energia', 'renovable', 'fotovoltaica', 'eficiencia energética', 'solar', 'eólica'],
-  'innovacion':      ['innovación', 'innovacion', 'investigación', 'investigacion', 'i+d', 'startup'],
-  'medio-ambiente':  ['medio ambiente', 'medioambiental', 'sostenibilidad', 'biodiversidad', 'residuos'],
-  'ong':             ['entidad sin ánimo', 'asociación', 'asociacion', 'ong', 'fundación', 'fundacion', 'voluntariado'],
-  'rehabilitacion':  ['rehabilitación', 'rehabilitacion', 'vivienda', 'edificio', 'construcción'],
-  'salud':           ['salud', 'sanitari', 'hospital', 'biomédica', 'biomedica', 'farmac'],
-  'tecnologia':      ['tecnología', 'tecnologia', 'digital', 'digitalización', 'software', 'inteligencia artificial'],
-  'turismo':         ['turismo', 'hostelería', 'hosteleria', 'hotel', 'alojamiento'],
+  'autonomos':          ['autónomo', 'autonomo', 'emprendedor', 'cuenta propia', 'trabajador por cuenta', 'freelance'],
+  'empresas':           ['empresa', 'pyme', 'sociedad', 'industria', 'comercio', 'negocio', 'mercantil'],
+  'agricultura':        ['agrícola', 'agricola', 'ganadería', 'ganaderia', 'rural', 'pesca', 'forestal', 'acuicultura', 'regadío', 'viticultura'],
+  'cultura':            ['cultura', 'patrimonio', 'artes', 'cine', 'teatro', 'música', 'musica', 'libro', 'editorial', 'audiovisual'],
+  'deporte':            ['deporte', 'deportiv', 'olimp', 'atletism', 'federación deportiva'],
+  'educacion':          ['educación', 'educacion', 'formación', 'formacion', 'beca', 'universidad', 'escolar', 'enseñanza', 'escuela', 'fp'],
+  'empleo':             ['empleo', 'contratación', 'contratacion', 'inserción laboral', 'desempleo', 'laboral', 'trabajador', 'paro', 'erte'],
+  'energia':            ['energía', 'energia', 'renovable', 'fotovoltaica', 'eficiencia energética', 'solar', 'eólica', 'biomasa', 'hidrógeno'],
+  'innovacion':         ['innovación', 'innovacion', 'investigación', 'investigacion', 'i+d', 'startup', 'tecnológico', 'ciencia', 'r+d'],
+  'internacionalizacion': ['internacionalización', 'internacionalizacion', 'exportación', 'exportacion', 'exterior', 'international'],
+  'juventud':           ['juventud', 'joven', 'menor', 'infancia', 'adolescente'],
+  'medio-ambiente':     ['medio ambiente', 'medioambiental', 'sostenibilidad', 'biodiversidad', 'residuos', 'contaminación', 'clima'],
+  'ong':                ['entidad sin ánimo', 'asociación', 'asociacion', 'ong', 'fundación', 'fundacion', 'voluntariado', 'tercer sector'],
+  'rehabilitacion':     ['rehabilitación', 'rehabilitacion', 'vivienda', 'edificio', 'construcción', 'alquiler', 'accesibilidad'],
+  'salud':              ['salud', 'sanitari', 'hospital', 'biomédica', 'biomedica', 'farmac', 'médico', 'medico', 'enfermedad'],
+  'tecnologia':         ['tecnología', 'tecnologia', 'digital', 'digitalización', 'software', 'inteligencia artificial', 'ia', 'ciberseguridad'],
+  'turismo':            ['turismo', 'hostelería', 'hosteleria', 'hotel', 'alojamiento', 'turístico'],
 };
 
 function inferirSectores(titulo = '', desc = '') {
@@ -95,27 +86,27 @@ function inferirSectores(titulo = '', desc = '') {
   for (const [slug, kws] of Object.entries(SECTORES_MAP)) {
     if (kws.some(kw => t.includes(kw))) sectores.push(slug);
   }
-  return sectores.length > 0 ? sectores : ['empresas'];
+  return sectores; // vacío si no hay match — mejor que un default incorrecto
 }
 
 const CCAA_KEYWORDS = {
-  'andalucia':            ['andalucía', 'andalucia', 'junta de andalucía'],
-  'aragon':               ['aragón', 'aragon'],
-  'asturias':             ['asturias'],
-  'baleares':             ['baleares', 'illes balears'],
-  'canarias':             ['canarias'],
-  'cantabria':            ['cantabria'],
-  'castilla-la-mancha':   ['castilla-la mancha', 'castilla la mancha'],
-  'castilla-y-leon':      ['castilla y león', 'castilla y leon'],
-  'cataluna':             ['cataluña', 'cataluna', 'catalunya'],
-  'comunidad-valenciana': ['comunitat valenciana', 'comunidad valenciana'],
-  'extremadura':          ['extremadura'],
-  'galicia':              ['galicia'],
-  'la-rioja':             ['la rioja'],
-  'madrid':               ['comunidad de madrid', 'región de madrid'],
-  'murcia':               ['región de murcia', 'murcia'],
-  'navarra':              ['navarra'],
-  'pais-vasco':           ['país vasco', 'pais vasco', 'euskadi'],
+  'andalucia':            ['andalucía', 'andalucia', 'junta de andalucía', 'boja', 'sevilla', 'málaga', 'granada', 'córdoba'],
+  'aragon':               ['aragón', 'aragon', 'zaragoza'],
+  'asturias':             ['asturias', 'principado de asturias'],
+  'baleares':             ['baleares', 'illes balears', 'mallorca', 'ibiza', 'menorca'],
+  'canarias':             ['canarias', 'canaria', 'tenerife', 'gran canaria', 'las palmas'],
+  'cantabria':            ['cantabria', 'santander'],
+  'castilla-la-mancha':   ['castilla-la mancha', 'castilla la mancha', 'toledo', 'albacete', 'ciudad real'],
+  'castilla-y-leon':      ['castilla y león', 'castilla y leon', 'valladolid', 'salamanca', 'burgos', 'ávila', 'segovia', 'soria', 'zamora'],
+  'cataluna':             ['cataluña', 'cataluna', 'catalunya', 'generalitat', 'dogc', 'barcelona', 'girona', 'lleida', 'tarragona'],
+  'comunidad-valenciana': ['comunitat valenciana', 'comunidad valenciana', 'valencia', 'alicante', 'castellón', 'dogv'],
+  'extremadura':          ['extremadura', 'badajoz', 'cáceres'],
+  'galicia':              ['galicia', 'xunta', 'galega', 'galego', 'vigo', 'coruña', 'pontevedra', 'ourense', 'lugo'],
+  'la-rioja':             ['la rioja', 'logroño'],
+  'madrid':               ['comunidad de madrid', 'región de madrid', 'bocm', 'madrid capital'],
+  'murcia':               ['región de murcia', 'murcia', 'cartagena'],
+  'navarra':              ['navarra', 'nafarroa', 'pamplona'],
+  'pais-vasco':           ['país vasco', 'pais vasco', 'euskadi', 'euskal', 'bopv', 'bilbao', 'vitoria', 'donostia', 'san sebastián'],
 };
 
 function inferirCCAA(texto = '') {
@@ -124,7 +115,7 @@ function inferirCCAA(texto = '') {
   for (const [slug, kws] of Object.entries(CCAA_KEYWORDS)) {
     if (kws.some(kw => t.includes(kw))) encontradas.push(slug);
   }
-  return encontradas.length > 0 ? encontradas : ['nacional'];
+  return encontradas;
 }
 
 function extraerImporte(texto = '') {
@@ -149,8 +140,8 @@ export async function scrapearBOE() {
   const todos = [];
   let total = 0;
 
-  for (const query of QUERIES) {
-    const items = await fetchGoogleNews(query);
+  for (const { q, ccaa: ccaaQuery } of QUERIES) {
+    const items = await fetchGoogleNews(q);
     total += items.length;
 
     for (const item of items) {
@@ -163,18 +154,25 @@ export async function scrapearBOE() {
       const url = item.link ?? '';
       if (!url) continue;
 
+      // CCAA: combinar la del query (fiable) con la detectada en el texto
+      const ccaaTexto  = inferirCCAA(texto);
+      const ccaaFinal  = ccaaQuery
+        ? [...new Set([ccaaQuery, ...ccaaTexto])]
+        : (ccaaTexto.length > 0 ? ccaaTexto : ['nacional']);
+
+      const sectores = inferirSectores(titulo, desc);
+
       todos.push({
         titulo,
-        organismo:     '',
+        organismo:     item.creator || item.author || '',
         descripcion:   desc.slice(0, 500),
         importe_texto: extraerImporte(texto),
         fecha_pub:     item.pubDate ? new Date(item.pubDate).toISOString().slice(0, 10) : null,
         fecha_cierre:  null,
-        plazo_texto:   null,
         url,
         tipo:          clasificarTipo(titulo),
-        sector:        inferirSectores(titulo, desc),
-        ccaa:          inferirCCAA(texto),
+        sector:        sectores,
+        ccaa:          ccaaFinal,
         fuente:        'BOE',
       });
     }
@@ -182,7 +180,7 @@ export async function scrapearBOE() {
     await sleep(DELAY_MS);
   }
 
-  const seen = new Set();
+  const seen   = new Set();
   const unicos = todos.filter(d => {
     if (!d.url || seen.has(d.url)) return false;
     seen.add(d.url);
