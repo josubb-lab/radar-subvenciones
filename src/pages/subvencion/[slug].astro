@@ -1,26 +1,22 @@
 ---
 import Layout from '../../layouts/Layout.astro'
-import { createClient } from '@supabase/supabase-js'
 import { SITE } from '../../lib/config'
-import { subvencionSlug } from '../../lib/slugify'
 import { slugToSector, slugToCCAA } from '../../lib/taxonomia'
 
 export const prerender = false
-// SSR para detalle: demasiadas subvenciones para pre-generar todas
 
 const { slug } = Astro.params
 const id = slug?.split('-').pop() ?? ''
 
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_KEY,
-)
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL?.replace(/\/$/, '')
+const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_KEY
 
-const { data: s } = await supabase
-  .from('subvenciones')
-  .select('*')
-  .filter('id::text', 'like', `${id}%`)
-  .single()
+const res = await fetch(
+  `${SUPABASE_URL}/rest/v1/subvenciones?id::text=like.${id}%25&select=*&limit=1`,
+  { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+)
+const rows = await res.json()
+const s = Array.isArray(rows) && rows.length > 0 ? rows[0] : null
 
 if (!s) return Astro.redirect('/404')
 
