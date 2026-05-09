@@ -5,6 +5,7 @@ import { CCAA, slugToCCAA } from '../../lib/taxonomia'
 import { subvencionSlug } from '../../lib/slugify'
 import { SITE } from '../../lib/config'
 
+export const prerender = true
 export function getStaticPaths() {
   return CCAA.map(c => ({ params: { ccaa: c.slug } }))
 }

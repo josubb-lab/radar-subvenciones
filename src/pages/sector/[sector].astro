@@ -5,6 +5,7 @@ import { SECTORES, slugToSector } from '../../lib/taxonomia'
 import { subvencionSlug } from '../../lib/slugify'
 import { SITE } from '../../lib/config'
 
+export const prerender = true
 export function getStaticPaths() {
   return SECTORES.map(s => ({ params: { sector: s.slug } }))
 }
