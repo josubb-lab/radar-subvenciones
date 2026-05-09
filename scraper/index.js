@@ -54,7 +54,7 @@ async function upsertSubvenciones(subvenciones) {
         'Content-Type': 'application/json',
         'apikey': SUPABASE_KEY,
         'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Prefer': 'return=minimal,resolution=ignore-duplicates',
+        'Prefer': 'return=minimal,resolution=merge-duplicates',
       },
       body: JSON.stringify(chunk),
     });
