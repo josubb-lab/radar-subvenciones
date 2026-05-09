@@ -23,10 +23,25 @@ const fuenteArg = process.argv.find(a => a.startsWith('--fuente='))?.split('=')[
 async function upsertSubvenciones(subvenciones) {
   if (subvenciones.length === 0) return;
 
+  // Test de conexión con insert mínimo
+  const testUrl = `https://test-diagnostico-${Date.now()}.internal`;
+  const { error: testErr } = await supabase
+    .from('subvenciones')
+    .insert({ titulo: 'diagnostico', url: testUrl });
+  if (testErr) {
+    console.error('ERROR DE CONEXIÓN/PERMISOS:', testErr.message);
+    console.error('Código:', testErr.code, '| Hint:', testErr.hint);
+    return;
+  }
+  // Borrar el test
+  await supabase.from('subvenciones').delete().eq('url', testUrl);
+  console.log('✓ Conexión Supabase OK');
+
   // Obtener URLs existentes para no duplicar
-  const { data: existentes } = await supabase
+  const { data: existentes, error: selErr } = await supabase
     .from('subvenciones')
     .select('url');
+  if (selErr) console.warn('Advertencia select:', selErr.message);
 
   const urlsExistentes = new Set((existentes ?? []).map(r => r.url));
   const nuevas = subvenciones.filter(s => s.url && !urlsExistentes.has(s.url));
@@ -37,14 +52,16 @@ async function upsertSubvenciones(subvenciones) {
   }
 
   console.log(`Insertando ${nuevas.length} subvenciones nuevas...`);
+  console.log('Muestra primer item:', JSON.stringify(nuevas[0]).slice(0, 200));
 
-  const CHUNK = 50;
+  const CHUNK = 20;
   let insertadas = 0;
   for (let i = 0; i < nuevas.length; i += CHUNK) {
     const chunk = nuevas.slice(i, i + CHUNK);
     const { error } = await supabase.from('subvenciones').insert(chunk);
     if (error) {
-      console.error(`Error insertando chunk: ${error.message}`);
+      console.error(`Error chunk ${i/CHUNK+1}: ${error.message} | code: ${error.code}`);
+      if (i === 0) console.error('Primer item fallido:', JSON.stringify(chunk[0]).slice(0, 300));
     } else {
       insertadas += chunk.length;
     }
