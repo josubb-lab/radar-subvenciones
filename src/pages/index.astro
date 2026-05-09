@@ -11,10 +11,10 @@ const supabase = createClient(
 )
 
 const { data: subvenciones } = await supabase
-  .from('subvenciones')
-  .select('id, titulo, organismo, descripcion, importe_texto, fecha_pub, fecha_cierre, plazo_texto, sector, ccaa, tipo, url')
-  .eq('activa', true)
-  .order('fecha_pub', { ascending: false, nullsFirst: false })
+  .from('hallazgos')
+  .select('id, titulo, descripcion, fuente, fecha, url')
+  .eq('nicho', 'subvenciones')
+  .order('fecha', { ascending: false, nullsFirst: false })
   .limit(50)
 
 const total = subvenciones?.length ?? 0
@@ -103,45 +103,25 @@ const jsonLd = {
       ) : (
         <ol class="space-y-4">
           {(subvenciones ?? []).map(s => {
-            const tm      = tipoMeta(s.tipo)
-            const fechaPub = s.fecha_pub
-              ? new Date(s.fecha_pub).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+            const fecha = s.fecha
+              ? new Date(s.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
               : null
-            const fechaCierre = s.fecha_cierre
-              ? new Date(s.fecha_cierre).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
-              : null
-            const slug = subvencionSlug(s.titulo ?? '', s.id)
             return (
               <li class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 hover:border-slate-700 transition-colors">
                 <div class="flex flex-wrap items-center gap-2 mb-2">
-                  <span class={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 ${tm.color}`}>
-                    {tm.label}
+                  <span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 text-emerald-400 bg-emerald-950/60 ring-emerald-700/50">
+                    {s.fuente ?? 'BOE'}
                   </span>
-                  {s.importe_texto && (
-                    <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 text-emerald-400 bg-emerald-950/60 ring-emerald-700/50">
-                      {s.importe_texto}
-                    </span>
-                  )}
-                  {fechaPub && <time class="text-xs text-slate-500 ml-auto">{fechaPub}</time>}
+                  {fecha && <time class="text-xs text-slate-500 ml-auto">{fecha}</time>}
                 </div>
 
-                <a href={`/subvencion/${slug}`} class="block text-sm font-semibold text-slate-100 leading-snug mb-1 hover:text-emerald-400 transition-colors">
+                <a href={s.url} target="_blank" rel="noopener noreferrer" class="block text-sm font-semibold text-slate-100 leading-snug mb-1 hover:text-emerald-400 transition-colors">
                   {s.titulo}
                 </a>
-
-                {s.organismo && (
-                  <p class="text-xs text-slate-500 mb-2">{s.organismo}</p>
-                )}
 
                 {s.descripcion && (
                   <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
                     {s.descripcion.slice(0, 200)}
-                  </p>
-                )}
-
-                {fechaCierre && (
-                  <p class="text-xs text-amber-500/80 mt-2">
-                    Plazo: hasta el {fechaCierre}
                   </p>
                 )}
               </li>
