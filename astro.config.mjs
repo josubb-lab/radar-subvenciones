@@ -5,6 +5,7 @@ import vercel from '@astrojs/vercel';
 
 export default defineConfig({
   site: process.env.PUBLIC_SITE_URL ?? 'https://radar-subvenciones.es',
+  output: 'hybrid',
   adapter: vercel(),
   integrations: [sitemap()],
   vite: {
