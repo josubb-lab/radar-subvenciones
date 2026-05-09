@@ -47,7 +47,6 @@ async function upsertSubvenciones(subvenciones) {
     fuente:      s.fuente ?? 'BOE',
     fecha:       s.fecha_pub ?? null,
     url:         s.url,
-    puntos:      10,
   }));
 
   const CHUNK = 50;
