@@ -14,6 +14,7 @@ const rssParser = new Parser({
 });
 
 const QUERIES = [
+  // Nacionales
   'extracto convocatoria subvenciones BOE site:boe.es',
   'convocatoria subvenciones ayudas BOE España 2025',
   'extracto orden subvenciones ministerio BOE',
@@ -26,6 +27,24 @@ const QUERIES = [
   'ayudas digitalización empresas pymes BOE convocatoria',
   'subvenciones cultura deporte BOE convocatoria',
   'ayudas empleo contratación BOE convocatoria',
+  // Por CCAA
+  'convocatoria subvenciones ayudas "Junta de Andalucía"',
+  'convocatoria subvenciones ayudas "Gobierno de Aragón"',
+  'convocatoria subvenciones ayudas "Principado de Asturias"',
+  'convocatoria subvenciones ayudas "Govern de les Illes Balears"',
+  'convocatoria subvenciones ayudas "Gobierno de Canarias"',
+  'convocatoria subvenciones ayudas "Gobierno de Cantabria"',
+  'convocatoria subvenciones ayudas "Junta de Castilla-La Mancha"',
+  'convocatoria subvenciones ayudas "Junta de Castilla y León"',
+  'convocatoria subvenciones ayudas "Generalitat de Catalunya"',
+  'convocatoria subvenciones ayudas "Generalitat Valenciana"',
+  'convocatoria subvenciones ayudas "Junta de Extremadura"',
+  'convocatoria subvenciones ayudas "Xunta de Galicia"',
+  'convocatoria subvenciones ayudas "Gobierno de La Rioja"',
+  'convocatoria subvenciones ayudas "Comunidad de Madrid"',
+  'convocatoria subvenciones ayudas "Región de Murcia"',
+  'convocatoria subvenciones ayudas "Gobierno de Navarra"',
+  'convocatoria subvenciones ayudas "Gobierno Vasco" OR "Eusko Jaurlaritza"',
 ];
 
 const KEYWORDS_OK = [
