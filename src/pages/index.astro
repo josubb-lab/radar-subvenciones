@@ -141,35 +141,7 @@ const jsonLd = {
     </div>
   </section>
 
-  <!-- BANNER TELEGRAM -->
-  <section class="border-b border-slate-800/60 bg-slate-900/40">
-    <div class="max-w-5xl mx-auto px-4 py-7">
-      <div class="flex flex-col sm:flex-row sm:items-center gap-8">
-        <div class="flex-1 max-w-lg">
-          <p class="text-xs font-semibold text-emerald-400 uppercase tracking-widest mb-1">Bot de Telegram · Gratis</p>
-          <h2 class="text-base font-bold text-slate-100 mb-2">Recibe alertas de subvenciones en Telegram</h2>
-          <p class="text-sm text-slate-400">El bot rastrea el BOE y el BDNS cada día y envía las nuevas convocatorias automáticamente en Telegram.</p>
-        </div>
-        <form class="js-form-telegram flex gap-2 shrink-0 w-full sm:w-auto">
-          <input
-            type="email"
-            name="email"
-            placeholder="tu@email.com"
-            required
-            class="flex-1 sm:w-56 px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-emerald-600"
-          />
-          <button
-            type="submit"
-            class="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold transition-colors whitespace-nowrap"
-          >
-            Acceder →
-          </button>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <main class="max-w-5xl mx-auto px-4 py-10 grid lg:grid-cols-[1fr_300px] gap-10">
+<main class="max-w-5xl mx-auto px-4 py-10 grid lg:grid-cols-[1fr_300px] gap-10">
 
     <!-- LISTADO PRINCIPAL -->
     <section>
@@ -241,22 +213,14 @@ const jsonLd = {
         <p class="text-xs text-slate-400 mb-4">
           El bot rastrea el BOE y el BDNS cada día y te envía las nuevas convocatorias directamente en Telegram.
         </p>
-        <form class="js-form-telegram space-y-2">
-          <input
-            type="email"
-            name="email"
-            placeholder="tu@email.com"
-            required
-            class="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-emerald-600"
-          />
-          <button
-            type="submit"
-            class="w-full px-4 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold transition-colors"
-          >
-            Acceder al bot gratis
-          </button>
-        </form>
-        <p class="js-form-msg text-xs mt-2 text-rose-400 hidden"></p>
+        <a
+          href="https://t.me/RadarSubvencionesBot"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block text-center px-4 py-3 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold transition-colors"
+        >
+          Unirse al bot gratis
+        </a>
       </div>
 
       <!-- CTA GESTOR -->
@@ -309,32 +273,4 @@ const jsonLd = {
     </div>
   </footer>
 
-<script>
-  document.querySelectorAll<HTMLFormElement>('.js-form-telegram').forEach(form => {
-    form.addEventListener('submit', async e => {
-      e.preventDefault()
-      const email = (form.elements.namedItem('email') as HTMLInputElement).value
-      const btn = form.querySelector('button') as HTMLButtonElement
-      const msg = form.closest('div')?.querySelector<HTMLElement>('.js-form-msg')
-      const originalText = btn.textContent ?? ''
-
-      btn.disabled = true
-      btn.textContent = 'Enviando...'
-
-      const res = await fetch('/api/suscribir', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      })
-
-      if (res.ok) {
-        window.location.href = 'https://t.me/RadarSubvencionesBot'
-      } else {
-        if (msg) { msg.textContent = 'Error al suscribirte. Inténtalo de nuevo.'; msg.classList.remove('hidden') }
-        btn.disabled = false
-        btn.textContent = originalText
-      }
-    })
-  })
-</script>
 </Layout>
