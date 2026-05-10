@@ -23,7 +23,7 @@ export const POST: APIRoute = async ({ request }) => {
     .insert({ email: email.toLowerCase().trim() })
 
   if (error && error.code !== '23505') {
-    return new Response(JSON.stringify({ error: 'Error interno' }), { status: 500 })
+    return new Response(JSON.stringify({ error: error.message, code: error.code }), { status: 500 })
   }
 
   return new Response(JSON.stringify({ ok: true }), { status: 200 })
