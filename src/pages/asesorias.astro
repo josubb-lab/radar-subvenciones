@@ -5,7 +5,7 @@ import { SITE } from '../lib/config'
 import B2BFeedSample from '../components/B2BFeedSample.astro'
 
 const pageTitle = 'Feed de Subvenciones para Asesorías · Radar Subvenciones'
-const pageDesc = 'Feed semanal de subvenciones para asesorías, gestorías y consultoras: convocatorias filtradas, priorizadas y listas para accionar.'
+const pageDesc = 'Feed CSV o Excel de subvenciones filtradas para asesorías, gestorías y consultoras: convocatorias priorizadas y listas para accionar.'
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -30,10 +30,10 @@ const jsonLd = {
     <section class="rounded-3xl border border-slate-800 bg-gradient-to-br from-emerald-950/40 via-slate-900 to-slate-950 p-8 lg:p-10">
       <p class="text-emerald-400 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Producto B2B</p>
       <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-50 leading-tight mb-4">
-        El radar semanal para asesorías que viven de detectar ayudas antes que nadie
+        Feed CSV/Excel de subvenciones filtradas para asesorías y gestorías
       </h1>
       <p class="text-slate-300 text-lg max-w-3xl mb-6">
-        Recibe un feed semanal de subvenciones y ayudas públicas filtradas, clasificadas y priorizadas para cartera de pymes, autónomos y clientes recurrentes.
+        Recibe una selección comercial de ayudas para pymes, autónomos, empresas, empleo, contratación, comercio local y digitalización. Menos boletín bruto, más oportunidades accionables para tu cartera.
       </p>
       <div class="flex flex-wrap gap-3">
         <a
@@ -43,10 +43,10 @@ const jsonLd = {
           Pedir muestra del feed
         </a>
         <a
-          href="#form-lead-asesoria"
+          href="#como-funciona"
           class="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-slate-700 hover:border-emerald-600 text-slate-200 text-sm font-semibold transition-colors"
         >
-          Solicitar demo
+          Ver cómo funciona
         </a>
       </div>
     </section>
@@ -54,7 +54,7 @@ const jsonLd = {
     <section class="grid lg:grid-cols-3 gap-4">
       <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
         <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Qué entregamos</p>
-        <p class="text-sm text-slate-300">Excel o CSV semanal con oportunidades detectadas, beneficiario objetivo, sector, ámbito, prioridad y enlace oficial.</p>
+        <p class="text-sm text-slate-300">CSV o Excel con oportunidades filtradas, beneficiario objetivo, sector, ámbito, score comercial y enlace oficial.</p>
       </div>
       <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
         <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Qué ahorra</p>
@@ -66,56 +66,20 @@ const jsonLd = {
       </div>
     </section>
 
-    <section class="grid lg:grid-cols-3 gap-5">
-      <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Radar Base</p>
-        <h2 class="text-xl font-bold text-slate-100 mb-2">149 €/mes</h2>
-        <p class="text-sm text-slate-400 mb-4">Feed semanal con convocatorias detectadas y clasificadas.</p>
-        <ul class="space-y-2 text-sm text-slate-300">
-          <li>Convocatorias BOE y BDNS</li>
-          <li>CSV o Excel semanal</li>
-          <li>Sector y ámbito</li>
-          <li>Enlace oficial</li>
-        </ul>
-      </article>
-      <article class="rounded-2xl border border-emerald-700/40 bg-emerald-950/20 p-6">
-        <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Radar Pro</p>
-        <h2 class="text-xl font-bold text-slate-100 mb-2">299 €/mes</h2>
-        <p class="text-sm text-slate-400 mb-4">La versión recomendada para despachos con cartera activa.</p>
-        <ul class="space-y-2 text-sm text-slate-300">
-          <li>Todo lo de Base</li>
-          <li>Prioridad comercial</li>
-          <li>Shortlist accionable</li>
-          <li>Alertas urgentes</li>
-        </ul>
-      </article>
-      <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Radar Premium</p>
-        <h2 class="text-xl font-bold text-slate-100 mb-2">Desde 499 €/mes</h2>
-        <p class="text-sm text-slate-400 mb-4">Feed adaptado a comunidad, sector o cartera concreta.</p>
-        <ul class="space-y-2 text-sm text-slate-300">
-          <li>Segmentación a medida</li>
-          <li>Enfoque por vertical</li>
-          <li>Mayor frecuencia</li>
-          <li>Acuerdo directo</li>
-        </ul>
-      </article>
-    </section>
-
-    <section class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+    <section id="como-funciona" class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
       <h2 class="text-xl font-bold text-slate-100 mb-4">Cómo funciona</h2>
       <div class="grid md:grid-cols-4 gap-4 text-sm text-slate-300">
         <div>
           <p class="text-emerald-400 font-semibold mb-1">1. Detección</p>
-          <p>Monitorizamos nuevas convocatorias publicadas en fuentes oficiales y semioficiales.</p>
+          <p>Monitorizamos BDNS, BOE y publicaciones relacionadas para localizar nuevas convocatorias.</p>
         </div>
         <div>
-          <p class="text-emerald-400 font-semibold mb-1">2. Clasificación</p>
-          <p>Etiquetamos por sector, ámbito, beneficiario y prioridad comercial.</p>
+          <p class="text-emerald-400 font-semibold mb-1">2. Filtro comercial</p>
+          <p>Quitamos ruido y priorizamos empleo, autónomos, empresas, comercio, digitalización e innovación aplicable.</p>
         </div>
         <div>
           <p class="text-emerald-400 font-semibold mb-1">3. Entrega</p>
-          <p>Recibes un fichero claro y accionable, sin ruido de boletín bruto.</p>
+          <p>Recibes un CSV o Excel claro, con prioridad, motivo comercial y enlace oficial.</p>
         </div>
         <div>
           <p class="text-emerald-400 font-semibold mb-1">4. Activación</p>
@@ -126,11 +90,47 @@ const jsonLd = {
 
     <B2BFeedSample />
 
+    <section class="grid lg:grid-cols-3 gap-5">
+      <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Radar Base</p>
+        <h2 class="text-xl font-bold text-slate-100 mb-2">Desde 149 €/mes</h2>
+        <p class="text-sm text-slate-400 mb-4">Feed semanal básico según cobertura y frecuencia.</p>
+        <ul class="space-y-2 text-sm text-slate-300">
+          <li>Convocatorias BOE y BDNS</li>
+          <li>CSV o Excel semanal</li>
+          <li>Sector y ámbito</li>
+          <li>Enlace oficial</li>
+        </ul>
+      </article>
+      <article class="rounded-2xl border border-emerald-700/40 bg-emerald-950/20 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Radar Pro</p>
+        <h2 class="text-xl font-bold text-slate-100 mb-2">Según cobertura</h2>
+        <p class="text-sm text-slate-400 mb-4">La opción recomendada para despachos con cartera activa y varios sectores.</p>
+        <ul class="space-y-2 text-sm text-slate-300">
+          <li>Todo lo de Base</li>
+          <li>Prioridad comercial</li>
+          <li>Shortlist accionable</li>
+          <li>Alertas urgentes</li>
+        </ul>
+      </article>
+      <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Radar Premium</p>
+        <h2 class="text-xl font-bold text-slate-100 mb-2">A medida</h2>
+        <p class="text-sm text-slate-400 mb-4">Feed adaptado a comunidad, sector o cartera concreta.</p>
+        <ul class="space-y-2 text-sm text-slate-300">
+          <li>Segmentación a medida</li>
+          <li>Enfoque por vertical</li>
+          <li>Mayor frecuencia</li>
+          <li>Acuerdo directo</li>
+        </ul>
+      </article>
+    </section>
+
     <section id="form-lead-asesoria" class="grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
       <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
         <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Pide una muestra</p>
         <h2 class="text-2xl font-bold text-slate-100 mb-3">Déjanos tus datos y te enviamos una muestra comercial del feed</h2>
-        <p class="text-sm text-slate-400 mb-6">Buscamos validar con asesorías reales. Si tu despacho tramita ayudas o detecta oportunidades para clientes, este es el siguiente paso útil.</p>
+        <p class="text-sm text-slate-400 mb-6">Te mandamos una muestra en CSV/Excel para que evalúes si encaja con tu cartera de clientes.</p>
 
         <form id="lead-asesoria-form" class="space-y-4">
           <div class="grid sm:grid-cols-2 gap-4">
@@ -183,26 +183,27 @@ const jsonLd = {
             </label>
           </div>
           <button type="submit" class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold transition-colors">
-            Solicitar muestra
+            Pedir muestra del feed
           </button>
+          <p class="text-xs text-slate-500">Usaremos estos datos solo para responder a tu solicitud y enviarte la muestra. Sin listas masivas ni cesión a terceros.</p>
           <p id="lead-asesoria-status" class="text-sm text-slate-400"></p>
         </form>
       </div>
 
       <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Qué vas a ver</p>
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Qué pasa después</p>
         <div class="space-y-3 text-sm text-slate-300">
           <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
-            <p class="font-semibold text-slate-100">Prioridad comercial</p>
-            <p class="text-slate-400 mt-1">Qué convocatorias mover primero con cartera de pymes, autónomos o entidades.</p>
+            <p class="font-semibold text-slate-100">1. Revisamos tu caso</p>
+            <p class="text-slate-400 mt-1">Vemos si tu despacho trabaja con pymes, autónomos, empresas o verticales concretas.</p>
           </div>
           <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
-            <p class="font-semibold text-slate-100">Beneficiario y ámbito</p>
-            <p class="text-slate-400 mt-1">Filtrado por tipo de cliente, sector y comunidad.</p>
+            <p class="font-semibold text-slate-100">2. Enviamos muestra</p>
+            <p class="text-slate-400 mt-1">Recibes una muestra del CSV/Excel con campos reales: prioridad, motivo, sector, ámbito y enlace oficial.</p>
           </div>
           <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
-            <p class="font-semibold text-slate-100">Enlace oficial</p>
-            <p class="text-slate-400 mt-1">Siempre con referencia a la fuente original para validación y tramitación.</p>
+            <p class="font-semibold text-slate-100">3. Ajustamos cobertura</p>
+            <p class="text-slate-400 mt-1">Si tiene sentido, definimos frecuencia, comunidades y sectores útiles para tu cartera.</p>
           </div>
         </div>
       </div>
