@@ -32,6 +32,7 @@ async function upsertSubvenciones(subvenciones) {
 
   const CHUNK = 50;
   let insertadas = 0;
+  let errores = 0;
   for (let i = 0; i < rows.length; i += CHUNK) {
     const chunk = rows.slice(i, i + CHUNK);
     const res = await fetch(`${SUPABASE_URL}/rest/v1/subvenciones?on_conflict=url`, {
@@ -46,10 +47,19 @@ async function upsertSubvenciones(subvenciones) {
     });
     if (!res.ok) {
       const msg = await res.text();
+      errores += 1;
       console.error(`Error chunk ${i/CHUNK+1}: ${res.status} | ${msg.slice(0, 200)}`);
     } else {
       insertadas += chunk.length;
     }
+  }
+
+  if (errores > 0) {
+    throw new Error(`Upsert incompleto: ${errores} chunks fallaron y solo ${insertadas}/${rows.length} filas se insertaron.`);
+  }
+
+  if (insertadas === 0 && rows.length > 0) {
+    throw new Error('Upsert fallido: no se insertó ninguna subvención.');
   }
 
   console.log(`✓ ${insertadas} subvenciones insertadas.`);
