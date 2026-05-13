@@ -9,7 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "feed:asesorias": "node scraper/export-asesorias.js"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",

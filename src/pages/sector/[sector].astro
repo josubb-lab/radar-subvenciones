@@ -5,6 +5,7 @@ import { SECTORES, CCAA, slugToSector } from '../../lib/taxonomia'
 import { subvencionSlug } from '../../lib/slugify'
 import NavBar from '../../components/NavBar.astro'
 import { SITE } from '../../lib/config'
+import B2BInlineCTA from '../../components/B2BInlineCTA.astro'
 
 export const prerender = true
 export function getStaticPaths() {
@@ -96,6 +97,12 @@ const jsonLd = {
   </section>
 
   <main class="max-w-5xl mx-auto px-4 py-10">
+    <div class="mb-8">
+      <B2BInlineCTA
+        title={`Feed para asesorias con ayudas de ${nombreSector}`}
+        body={`Si tu despacho trabaja con clientes de ${nombreSector}, puedes recibir un feed semanal con convocatorias filtradas por sector, prioridad y ambito.`}
+      />
+    </div>
     {(subvenciones ?? []).length === 0 ? (
       <p class="text-slate-500 text-sm">No hay convocatorias activas para este sector ahora mismo. El radar actualiza diariamente.</p>
     ) : (

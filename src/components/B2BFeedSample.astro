@@ -1,0 +1,84 @@
+---
+const filas = [
+  {
+    prioridad: 'Alta',
+    beneficiario: 'Pymes',
+    sector: 'Digitalizacion',
+    ambito: 'Comunidad Valenciana',
+    ayuda: 'Ayudas de digitalizacion de pymes con INTECA hasta 100.000 euros',
+  },
+  {
+    prioridad: 'Alta',
+    beneficiario: 'Autonomos',
+    sector: 'Empleo',
+    ambito: 'Baleares',
+    ayuda: 'Nuevas ayudas Cuota Cero para personas trabajadoras autonomas',
+  },
+  {
+    prioridad: 'Media',
+    beneficiario: 'Empresas exportadoras',
+    sector: 'Internacionalizacion',
+    ambito: 'Castilla-La Mancha',
+    ayuda: 'Convocatoria presentacion de producto en Uruguay y Brasil',
+  },
+  {
+    prioridad: 'Media',
+    beneficiario: 'Centros educativos',
+    sector: 'Educacion',
+    ambito: 'Baleares',
+    ayuda: 'Ayudas a la red de escuelas infantiles de primer ciclo',
+  },
+  {
+    prioridad: 'Alta',
+    beneficiario: 'Pymes y comercio',
+    sector: 'Comercio rural',
+    ambito: 'La Rioja',
+    ayuda: 'Ayudas para pequeno comercio y venta ambulante en pueblos pequenos',
+  },
+]
+
+const badgeClass = {
+  Alta: 'text-emerald-400 bg-emerald-950/60 ring-emerald-700/50',
+  Media: 'text-amber-400 bg-amber-950/60 ring-amber-700/50',
+  Baja: 'text-slate-400 bg-slate-900 ring-slate-700/50',
+}
+---
+
+<section class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 overflow-hidden">
+  <div class="flex items-end justify-between gap-4 mb-5">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-2">Muestra del feed</p>
+      <h2 class="text-xl font-bold text-slate-100">Así se ve una selección comercial para asesorías</h2>
+    </div>
+    <p class="hidden md:block text-xs text-slate-500">Vista simplificada del Excel/CSV</p>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead>
+        <tr class="text-left text-slate-500 border-b border-slate-800">
+          <th class="py-3 pr-4 font-semibold">Prioridad</th>
+          <th class="py-3 pr-4 font-semibold">Beneficiario</th>
+          <th class="py-3 pr-4 font-semibold">Sector</th>
+          <th class="py-3 pr-4 font-semibold">Ambito</th>
+          <th class="py-3 font-semibold">Oportunidad detectada</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filas.map((fila) => (
+          <tr class="border-b border-slate-800/70 last:border-0">
+            <td class="py-3 pr-4 align-top">
+              <span class={`inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 ${badgeClass[fila.prioridad]}`}>
+                {fila.prioridad}
+              </span>
+            </td>
+            <td class="py-3 pr-4 text-slate-300 align-top">{fila.beneficiario}</td>
+            <td class="py-3 pr-4 text-slate-400 align-top">{fila.sector}</td>
+            <td class="py-3 pr-4 text-slate-400 align-top">{fila.ambito}</td>
+            <td class="py-3 text-slate-200 align-top">{fila.ayuda}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>

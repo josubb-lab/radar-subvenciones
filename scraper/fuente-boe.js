@@ -1,4 +1,5 @@
 import Parser from 'rss-parser';
+import { inferirCCAA, inferirSectores } from './taxonomia.js';
 
 const DELAY_MS = 1_400;
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
@@ -58,64 +59,6 @@ function clasificarTipo(titulo = '') {
   if (t.includes('bases reguladoras')) return 'bases';
   if (t.includes('resoluci'))          return 'resolucion';
   return 'convocatoria';
-}
-
-const SECTORES_MAP = {
-  'autonomos':          ['autónomo', 'autonomo', 'emprendedor', 'cuenta propia', 'trabajador por cuenta', 'freelance'],
-  'empresas':           ['empresa', 'pyme', 'sociedad', 'industria', 'comercio', 'negocio', 'mercantil'],
-  'agricultura':        ['agrícola', 'agricola', 'ganadería', 'ganaderia', 'rural', 'pesca', 'forestal', 'acuicultura', 'regadío', 'viticultura'],
-  'cultura':            ['cultura', 'patrimonio', 'artes', 'cine', 'teatro', 'música', 'musica', 'libro', 'editorial', 'audiovisual'],
-  'deporte':            ['deporte', 'deportiv', 'olimp', 'atletism', 'federación deportiva'],
-  'educacion':          ['educación', 'educacion', 'formación', 'formacion', 'beca', 'universidad', 'escolar', 'enseñanza', 'escuela', 'fp'],
-  'empleo':             ['empleo', 'contratación', 'contratacion', 'inserción laboral', 'desempleo', 'laboral', 'trabajador', 'paro', 'erte'],
-  'energia':            ['energía', 'energia', 'renovable', 'fotovoltaica', 'eficiencia energética', 'solar', 'eólica', 'biomasa', 'hidrógeno'],
-  'innovacion':         ['innovación', 'innovacion', 'investigación', 'investigacion', 'i+d', 'startup', 'tecnológico', 'ciencia', 'r+d'],
-  'internacionalizacion': ['internacionalización', 'internacionalizacion', 'exportación', 'exportacion', 'exterior', 'international'],
-  'juventud':           ['juventud', 'joven', 'menor', 'infancia', 'adolescente'],
-  'medio-ambiente':     ['medio ambiente', 'medioambiental', 'sostenibilidad', 'biodiversidad', 'residuos', 'contaminación', 'clima'],
-  'ong':                ['entidad sin ánimo', 'asociación', 'asociacion', 'ong', 'fundación', 'fundacion', 'voluntariado', 'tercer sector'],
-  'rehabilitacion':     ['rehabilitación', 'rehabilitacion', 'vivienda', 'edificio', 'construcción', 'alquiler', 'accesibilidad'],
-  'salud':              ['salud', 'sanitari', 'hospital', 'biomédica', 'biomedica', 'farmac', 'médico', 'medico', 'enfermedad'],
-  'tecnologia':         ['tecnología', 'tecnologia', 'digital', 'digitalización', 'software', 'inteligencia artificial', 'ia', 'ciberseguridad'],
-  'turismo':            ['turismo', 'hostelería', 'hosteleria', 'hotel', 'alojamiento', 'turístico'],
-};
-
-function inferirSectores(titulo = '', desc = '') {
-  const t = (titulo + ' ' + desc).toLowerCase();
-  const sectores = [];
-  for (const [slug, kws] of Object.entries(SECTORES_MAP)) {
-    if (kws.some(kw => t.includes(kw))) sectores.push(slug);
-  }
-  return sectores; // vacío si no hay match — mejor que un default incorrecto
-}
-
-const CCAA_KEYWORDS = {
-  'andalucia':            ['andalucía', 'andalucia', 'junta de andalucía', 'boja', 'sevilla', 'málaga', 'granada', 'córdoba'],
-  'aragon':               ['aragón', 'aragon', 'zaragoza'],
-  'asturias':             ['asturias', 'principado de asturias'],
-  'baleares':             ['baleares', 'illes balears', 'mallorca', 'ibiza', 'menorca'],
-  'canarias':             ['canarias', 'canaria', 'tenerife', 'gran canaria', 'las palmas'],
-  'cantabria':            ['cantabria', 'santander'],
-  'castilla-la-mancha':   ['castilla-la mancha', 'castilla la mancha', 'toledo', 'albacete', 'ciudad real'],
-  'castilla-y-leon':      ['castilla y león', 'castilla y leon', 'valladolid', 'salamanca', 'burgos', 'ávila', 'segovia', 'soria', 'zamora'],
-  'cataluna':             ['cataluña', 'cataluna', 'catalunya', 'generalitat', 'dogc', 'barcelona', 'girona', 'lleida', 'tarragona'],
-  'comunidad-valenciana': ['comunitat valenciana', 'comunidad valenciana', 'valencia', 'alicante', 'castellón', 'dogv'],
-  'extremadura':          ['extremadura', 'badajoz', 'cáceres'],
-  'galicia':              ['galicia', 'xunta', 'galega', 'galego', 'vigo', 'coruña', 'pontevedra', 'ourense', 'lugo'],
-  'la-rioja':             ['la rioja', 'logroño'],
-  'madrid':               ['comunidad de madrid', 'región de madrid', 'bocm', 'madrid capital'],
-  'murcia':               ['región de murcia', 'murcia', 'cartagena'],
-  'navarra':              ['navarra', 'nafarroa', 'pamplona'],
-  'pais-vasco':           ['país vasco', 'pais vasco', 'euskadi', 'euskal', 'bopv', 'bilbao', 'vitoria', 'donostia', 'san sebastián'],
-};
-
-function inferirCCAA(texto = '') {
-  const t = texto.toLowerCase();
-  const encontradas = [];
-  for (const [slug, kws] of Object.entries(CCAA_KEYWORDS)) {
-    if (kws.some(kw => t.includes(kw))) encontradas.push(slug);
-  }
-  return encontradas;
 }
 
 function extraerImporte(texto = '') {

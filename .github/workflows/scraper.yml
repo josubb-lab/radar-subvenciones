@@ -35,7 +35,20 @@ jobs:
           PUBLIC_SUPABASE_KEY: ${{ secrets.PUBLIC_SUPABASE_KEY }}
           TELEGRAM_TOKEN:      ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHANNEL:    ${{ secrets.TELEGRAM_CHANNEL }}
-          
+
+      - name: Generar feed de asesorias
+        run: |
+          mkdir -p exports
+          ARGS=""
+          [ -n "${{ github.event.inputs.fuente }}" ] && ARGS="--fuente=${{ github.event.inputs.fuente }}"
+          npm run feed:asesorias -- $ARGS --dias=14 --salida=feed-asesorias-latest.csv
+
+      - name: Publicar feed como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: feed-asesorias-latest
+          path: exports/feed-asesorias-latest.csv
+          if-no-files-found: error
 
       - name: Rebuild Vercel
         if: success()

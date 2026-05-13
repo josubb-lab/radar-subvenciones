@@ -50,6 +50,15 @@ const jsonLd = {
       },
     },
     {
+      '@type': 'Service',
+      name: 'Feed de subvenciones para asesorías',
+      description: 'Feed recurrente para gestorías, asesorías y consultoras con convocatorias filtradas y priorizadas.',
+      provider: { '@type': 'Organization', name: SITE.nombre, url: SITE.siteUrl },
+      areaServed: { '@type': 'Country', name: 'Spain' },
+      serviceType: 'Data feed B2B de subvenciones',
+      url: `${SITE.siteUrl}/asesorias`,
+    },
+    {
       '@type': 'FAQPage',
       mainEntity: [
         {
@@ -91,15 +100,29 @@ const jsonLd = {
   <section class="bg-gradient-to-b from-emerald-950/30 to-slate-950 border-b border-slate-800/60">
     <div class="max-w-5xl mx-auto px-4 py-14 lg:py-20">
       <p class="text-emerald-400 text-xs font-semibold uppercase tracking-widest mb-3">
-        Actualizado diariamente desde BOE y BDNS
+        MVP B2B para asesorías · BOE + BDNS
       </p>
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-50 leading-tight mb-4">
-        Subvenciones y ayudas públicas<br class="hidden sm:block"> en España
+        El radar comercial de subvenciones<br class="hidden sm:block"> para asesorías y gestorías
       </h1>
       <p class="text-slate-400 text-lg max-w-2xl mb-8">
-        Encuentra subvenciones y ayudas públicas para autónomos, empresas, cultura, I+D, energía y más.
-        Todas las convocatorias del BOE y boletines autonómicos en un solo lugar.
+        Detecta oportunidades para tu cartera sin leer boletines durante horas. Feed semanal, shortlist accionable y alertas de ayudas para pymes, autónomos, empleo, digitalización e internacionalización.
       </p>
+
+      <div class="flex flex-wrap gap-3 mb-8">
+        <a
+          href="/asesorias"
+          class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold transition-colors"
+        >
+          Ver producto para asesorías
+        </a>
+        <a
+          href="#lead-b2b-home"
+          class="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-slate-700 hover:border-emerald-600 text-slate-200 text-sm font-semibold transition-colors"
+        >
+          Pedir muestra
+        </a>
+      </div>
 
       <!-- ESTADÍSTICAS -->
       <div class="flex flex-wrap gap-6 mb-8">
@@ -113,30 +136,27 @@ const jsonLd = {
         </div>
         <div>
           <p class="text-2xl font-extrabold text-emerald-400">Diario</p>
-          <p class="text-xs text-slate-500 mt-0.5">actualización automática</p>
+          <p class="text-xs text-slate-500 mt-0.5">ingesta y clasificación</p>
         </div>
         <div>
-          <p class="text-2xl font-extrabold text-emerald-400">Gratis</p>
-          <p class="text-xs text-slate-500 mt-0.5">sin registro</p>
+          <p class="text-2xl font-extrabold text-emerald-400">B2B</p>
+          <p class="text-xs text-slate-500 mt-0.5">feed para despachos</p>
         </div>
       </div>
 
-      <!-- BUSCADOR POR SECTOR -->
-      <div class="flex flex-wrap gap-2">
-        {SECTORES.slice(0, 8).map(s => (
-          <a
-            href={`/sector/${s.slug}`}
-            class="px-3 py-1.5 rounded-full text-sm font-medium border border-slate-700 bg-slate-900 text-slate-300 hover:border-emerald-600 hover:text-emerald-400 transition-colors"
-          >
-            {s.nombre}
-          </a>
-        ))}
-        <a
-          href="/sectores"
-          class="px-3 py-1.5 rounded-full text-sm font-medium border border-slate-700 bg-slate-900 text-slate-500 hover:text-slate-300 transition-colors"
-        >
-          Ver todos →
-        </a>
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
+          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Qué vendes</p>
+          <p class="text-sm text-slate-300">Tiempo ahorrado, detección temprana y oportunidades filtradas para clientes reales.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
+          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Qué recibes</p>
+          <p class="text-sm text-slate-300">Excel o CSV con prioridad, ámbito, sector, beneficiario y enlace oficial listo para trabajar.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
+          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Dónde empieza</p>
+          <p class="text-sm text-slate-300">BOE y BDNS hoy. Más fuentes oficiales conforme endurezcamos el motor.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -146,7 +166,7 @@ const jsonLd = {
     <!-- LISTADO PRINCIPAL -->
     <section>
       <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-5">
-        Últimas convocatorias
+        Muestra pública del radar
       </h2>
 
       {(subvenciones ?? []).length === 0 ? (
@@ -205,31 +225,27 @@ const jsonLd = {
       </div>
 
 
-      <!-- CTA GESTOR -->
-      <div class="rounded-xl border border-slate-800 bg-slate-900/30 p-5">
-        <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">¿Necesitas ayuda?</p>
+      <!-- CTA ASESORIAS -->
+      <div class="rounded-xl border border-emerald-800/40 bg-emerald-950/20 p-5">
+        <p class="text-xs font-semibold text-emerald-400 uppercase tracking-widest mb-2">Producto para despachos</p>
         <h3 class="text-sm font-bold text-slate-200 mb-2">
-          Gestores especializados en subvenciones
+          Feed semanal para asesorías y gestorías
         </h3>
         <p class="text-xs text-slate-400 mb-4">
-          Solicitar una subvención tiene complejidad burocrática. Un gestor especializado maximiza tus probabilidades.
+          Convocatorias clasificadas, priorizadas y listas para mover con tu cartera de clientes.
         </p>
         <div class="space-y-2">
           <a
-            href="https://www.gestoriasdeempresa.com"
-            target="_blank"
-            rel="noopener noreferrer sponsored"
-            class="block text-center px-4 py-2 rounded-lg border border-slate-700 bg-slate-800 hover:border-emerald-600 hover:text-emerald-400 text-slate-300 text-xs font-semibold transition-colors"
+            href="/asesorias"
+            class="block text-center px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-colors"
           >
-            Gestoría especializada
+            Ver propuesta B2B
           </a>
           <a
-            href="https://www.enae.es"
-            target="_blank"
-            rel="noopener noreferrer sponsored"
+            href="#lead-b2b-home"
             class="block text-center px-4 py-2 rounded-lg border border-slate-700 bg-slate-800 hover:border-emerald-600 hover:text-emerald-400 text-slate-300 text-xs font-semibold transition-colors"
           >
-            Consultoría ENAE
+            Pedir muestra
           </a>
         </div>
       </div>
@@ -241,6 +257,51 @@ const jsonLd = {
 
     </aside>
   </main>
+
+  <section id="lead-b2b-home" class="max-w-5xl mx-auto px-4 pb-12">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 lg:p-7">
+      <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-6 items-start">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Captación B2B</p>
+          <h2 class="text-2xl font-bold text-slate-100 mb-3">Pide una muestra del feed para asesorías</h2>
+          <p class="text-sm text-slate-400">
+            Si llevas pymes, autónomos o entidades, te enseñamos cómo llega la información operativa: prioridad, sector, ámbito y enlace oficial.
+          </p>
+        </div>
+        <form id="lead-home-form" class="grid sm:grid-cols-2 gap-4">
+          <input type="hidden" name="tipo_despacho" value="Lead desde home" />
+          <label class="block sm:col-span-1">
+            <span class="text-xs text-slate-400 mb-1 block">Nombre</span>
+            <input name="nombre" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500" />
+          </label>
+          <label class="block sm:col-span-1">
+            <span class="text-xs text-slate-400 mb-1 block">Empresa</span>
+            <input name="empresa" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500" />
+          </label>
+          <label class="block sm:col-span-2">
+            <span class="text-xs text-slate-400 mb-1 block">Email profesional</span>
+            <input type="email" name="email" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500" />
+          </label>
+          <label class="block sm:col-span-2">
+            <span class="text-xs text-slate-400 mb-1 block">Interés principal</span>
+            <select name="interes" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500">
+              <option value="">No especificado</option>
+              <option>Feed semanal</option>
+              <option>Alertas urgentes</option>
+              <option>Segmentación por sector</option>
+              <option>Segmentación por comunidad</option>
+            </select>
+          </label>
+          <div class="sm:col-span-2 flex flex-wrap items-center gap-3">
+            <button type="submit" class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold transition-colors">
+              Solicitar muestra
+            </button>
+            <p id="lead-home-status" class="text-sm text-slate-400"></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
 
   <!-- FOOTER -->
   <footer class="border-t border-slate-800/60 mt-10">
@@ -254,5 +315,40 @@ const jsonLd = {
       </nav>
     </div>
   </footer>
+
+  <script>
+    async function bindLeadForm(formId, statusId) {
+      const form = document.getElementById(formId);
+      const status = document.getElementById(statusId);
+      if (!form || !status) return;
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        status.textContent = 'Enviando...';
+        status.className = 'text-sm text-slate-400';
+
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+
+        try {
+          const res = await fetch('/api/lead-asesoria', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'No se pudo enviar');
+          form.reset();
+          status.textContent = 'Recibido. Te contactaremos con una muestra del feed.';
+          status.className = 'text-sm text-emerald-400';
+        } catch (error) {
+          status.textContent = error instanceof Error ? error.message : 'Ha fallado el envío';
+          status.className = 'text-sm text-rose-400';
+        }
+      });
+    }
+
+    bindLeadForm('lead-home-form', 'lead-home-status');
+  </script>
 
 </Layout>

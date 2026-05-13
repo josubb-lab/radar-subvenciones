@@ -4,8 +4,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { scrapearBOE }  from './fuente-boe.js';
-import { scrapearBDNS } from './fuente-bdns.js';
+import { enrichSubvencion, mapSubvencionToDbRow, recogerSubvenciones } from './motor.js';
 
 const SUPABASE_URL = process.env.PUBLIC_SUPABASE_URL?.replace(/\/+$/, '');
 const SUPABASE_KEY = process.env.PUBLIC_SUPABASE_KEY;
@@ -26,20 +25,7 @@ async function upsertSubvenciones(subvenciones) {
 
   const rows = subvenciones
     .filter(s => s.url)
-    .map(s => ({
-      titulo:        s.titulo,
-      organismo:     s.organismo || null,
-      descripcion:   s.descripcion?.slice(0, 1000) || null,
-      importe_texto: s.importe_texto || null,
-      fecha_pub:     s.fecha_pub || null,
-      fecha_cierre:  s.fecha_cierre || null,
-      url:           s.url,
-      tipo:          s.tipo || 'convocatoria',
-      sector:        s.sector?.length > 0 ? s.sector : [],
-      ccaa:          s.ccaa?.length > 0 ? s.ccaa : ['nacional'],
-      fuente:        s.fuente || 'BOE',
-      activa:        true,
-    }));
+    .map(mapSubvencionToDbRow);
 
   if (rows.length === 0) return;
   console.log(`Procesando ${rows.length} subvenciones...`);
@@ -95,7 +81,13 @@ async function publicarEnTelegram(subvenciones) {
   if (!TOKEN || !CHANNEL) return;
 
   const top = subvenciones
+    .map(item => enrichSubvencion(item))
     .filter(s => s.titulo && s.url)
+    .sort((a, b) => {
+      const prio = { Alta: 3, Media: 2, Baja: 1 };
+      return (prio[b.prioridad] - prio[a.prioridad]) ||
+        String(b.fecha_publicacion).localeCompare(String(a.fecha_publicacion));
+    })
     .slice(0, 5);
 
   if (top.length === 0) return;
@@ -125,9 +117,7 @@ async function publicarEnTelegram(subvenciones) {
 async function main() {
   console.log(`\n=== Radar Subvenciones — fuente: ${fuenteArg} ===\n`);
 
-  const todas = [];
-  if (fuenteArg === 'boe'  || fuenteArg === 'todas') todas.push(...await scrapearBOE());
-  if (fuenteArg === 'bdns' || fuenteArg === 'todas') todas.push(...await scrapearBDNS());
+  const todas = await recogerSubvenciones({ fuente: fuenteArg });
 
   await upsertSubvenciones(todas);
   await marcarExpiradas();

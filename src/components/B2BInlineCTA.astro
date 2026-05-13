@@ -1,0 +1,28 @@
+---
+interface Props {
+  title?: string
+  body?: string
+  ctaHref?: string
+  ctaLabel?: string
+}
+
+const {
+  title = '¿Llevas clientes que pueden optar a estas ayudas?',
+  body = 'Recibe un feed para asesorias con convocatorias filtradas, priorizadas y listas para mover con tu cartera.',
+  ctaHref = '/asesorias',
+  ctaLabel = 'Ver producto para asesorias',
+} = Astro.props
+---
+
+<section class="rounded-2xl border border-emerald-800/40 bg-emerald-950/20 p-5 lg:p-6">
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-2">Monetizacion B2B</p>
+      <h2 class="text-lg font-bold text-slate-100 mb-2">{title}</h2>
+      <p class="text-sm text-slate-400 max-w-2xl">{body}</p>
+    </div>
+    <a href={ctaHref} class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold transition-colors shrink-0">
+      {ctaLabel}
+    </a>
+  </div>
+</section>

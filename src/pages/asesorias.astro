@@ -1,0 +1,243 @@
+---
+import Layout from '../layouts/Layout.astro'
+import NavBar from '../components/NavBar.astro'
+import { SITE } from '../lib/config'
+import B2BFeedSample from '../components/B2BFeedSample.astro'
+
+const pageTitle = 'Feed de Subvenciones para Asesorías · Radar Subvenciones'
+const pageDesc = 'Feed semanal de subvenciones para asesorías, gestorías y consultoras: convocatorias filtradas, priorizadas y listas para accionar.'
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: 'Feed de subvenciones para asesorías',
+      provider: { '@type': 'Organization', name: SITE.nombre, url: SITE.siteUrl },
+      areaServed: { '@type': 'Country', name: 'Spain' },
+      description: pageDesc,
+      serviceType: 'Data feed B2B de subvenciones y alertas comerciales',
+      url: `${SITE.siteUrl}/asesorias`,
+    },
+  ],
+}
+---
+
+<Layout title={pageTitle} description={pageDesc} jsonLd={jsonLd}>
+  <NavBar breadcrumb={[{ label: 'Asesorías' }]} />
+
+  <main class="max-w-5xl mx-auto px-4 py-10 space-y-10">
+    <section class="rounded-3xl border border-slate-800 bg-gradient-to-br from-emerald-950/40 via-slate-900 to-slate-950 p-8 lg:p-10">
+      <p class="text-emerald-400 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Producto B2B</p>
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-50 leading-tight mb-4">
+        El radar semanal para asesorías que viven de detectar ayudas antes que nadie
+      </h1>
+      <p class="text-slate-300 text-lg max-w-3xl mb-6">
+        Recibe un feed semanal de subvenciones y ayudas públicas filtradas, clasificadas y priorizadas para cartera de pymes, autónomos y clientes recurrentes.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a
+          href="#form-lead-asesoria"
+          class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold transition-colors"
+        >
+          Pedir muestra del feed
+        </a>
+        <a
+          href="#form-lead-asesoria"
+          class="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-slate-700 hover:border-emerald-600 text-slate-200 text-sm font-semibold transition-colors"
+        >
+          Solicitar demo
+        </a>
+      </div>
+    </section>
+
+    <section class="grid lg:grid-cols-3 gap-4">
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Qué entregamos</p>
+        <p class="text-sm text-slate-300">Excel o CSV semanal con oportunidades detectadas, beneficiario objetivo, sector, ámbito, prioridad y enlace oficial.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Qué ahorra</p>
+        <p class="text-sm text-slate-300">Horas de lectura de boletines, revisión manual y pérdida de oportunidades por llegar tarde.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Para quién</p>
+        <p class="text-sm text-slate-300">Gestorías, despachos, asesorías fiscales, consultoras de subvenciones y agencias que tramitan ayudas para terceros.</p>
+      </div>
+    </section>
+
+    <section class="grid lg:grid-cols-3 gap-5">
+      <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Radar Base</p>
+        <h2 class="text-xl font-bold text-slate-100 mb-2">149 €/mes</h2>
+        <p class="text-sm text-slate-400 mb-4">Feed semanal con convocatorias detectadas y clasificadas.</p>
+        <ul class="space-y-2 text-sm text-slate-300">
+          <li>Convocatorias BOE y BDNS</li>
+          <li>CSV o Excel semanal</li>
+          <li>Sector y ámbito</li>
+          <li>Enlace oficial</li>
+        </ul>
+      </article>
+      <article class="rounded-2xl border border-emerald-700/40 bg-emerald-950/20 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Radar Pro</p>
+        <h2 class="text-xl font-bold text-slate-100 mb-2">299 €/mes</h2>
+        <p class="text-sm text-slate-400 mb-4">La versión recomendada para despachos con cartera activa.</p>
+        <ul class="space-y-2 text-sm text-slate-300">
+          <li>Todo lo de Base</li>
+          <li>Prioridad comercial</li>
+          <li>Shortlist accionable</li>
+          <li>Alertas urgentes</li>
+        </ul>
+      </article>
+      <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Radar Premium</p>
+        <h2 class="text-xl font-bold text-slate-100 mb-2">Desde 499 €/mes</h2>
+        <p class="text-sm text-slate-400 mb-4">Feed adaptado a comunidad, sector o cartera concreta.</p>
+        <ul class="space-y-2 text-sm text-slate-300">
+          <li>Segmentación a medida</li>
+          <li>Enfoque por vertical</li>
+          <li>Mayor frecuencia</li>
+          <li>Acuerdo directo</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+      <h2 class="text-xl font-bold text-slate-100 mb-4">Cómo funciona</h2>
+      <div class="grid md:grid-cols-4 gap-4 text-sm text-slate-300">
+        <div>
+          <p class="text-emerald-400 font-semibold mb-1">1. Detección</p>
+          <p>Monitorizamos nuevas convocatorias publicadas en fuentes oficiales y semioficiales.</p>
+        </div>
+        <div>
+          <p class="text-emerald-400 font-semibold mb-1">2. Clasificación</p>
+          <p>Etiquetamos por sector, ámbito, beneficiario y prioridad comercial.</p>
+        </div>
+        <div>
+          <p class="text-emerald-400 font-semibold mb-1">3. Entrega</p>
+          <p>Recibes un fichero claro y accionable, sin ruido de boletín bruto.</p>
+        </div>
+        <div>
+          <p class="text-emerald-400 font-semibold mb-1">4. Activación</p>
+          <p>Tu despacho decide qué oportunidades mover primero con su cartera.</p>
+        </div>
+      </div>
+    </section>
+
+    <B2BFeedSample />
+
+    <section id="form-lead-asesoria" class="grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Pide una muestra</p>
+        <h2 class="text-2xl font-bold text-slate-100 mb-3">Déjanos tus datos y te enviamos una muestra comercial del feed</h2>
+        <p class="text-sm text-slate-400 mb-6">Buscamos validar con asesorías reales. Si tu despacho tramita ayudas o detecta oportunidades para clientes, este es el siguiente paso útil.</p>
+
+        <form id="lead-asesoria-form" class="space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block">
+              <span class="text-xs text-slate-400 mb-1 block">Nombre</span>
+              <input name="nombre" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500" />
+            </label>
+            <label class="block">
+              <span class="text-xs text-slate-400 mb-1 block">Empresa o despacho</span>
+              <input name="empresa" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500" />
+            </label>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block">
+              <span class="text-xs text-slate-400 mb-1 block">Email profesional</span>
+              <input type="email" name="email" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500" />
+            </label>
+            <label class="block">
+              <span class="text-xs text-slate-400 mb-1 block">Tipo de despacho</span>
+              <select name="tipo_despacho" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500">
+                <option value="">Selecciona una opción</option>
+                <option>Asesoría fiscal</option>
+                <option>Gestoría</option>
+                <option>Consultora de subvenciones</option>
+                <option>Despacho multidisciplinar</option>
+                <option>Otro</option>
+              </select>
+            </label>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block">
+              <span class="text-xs text-slate-400 mb-1 block">Número aproximado de clientes</span>
+              <select name="clientes" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500">
+                <option value="">No especificado</option>
+                <option>1-25</option>
+                <option>26-100</option>
+                <option>101-300</option>
+                <option>300+</option>
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-xs text-slate-400 mb-1 block">Interés principal</span>
+              <select name="interes" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500">
+                <option value="">No especificado</option>
+                <option>Feed semanal</option>
+                <option>Alertas urgentes</option>
+                <option>Segmentación por comunidad</option>
+                <option>Segmentación por sector</option>
+              </select>
+            </label>
+          </div>
+          <button type="submit" class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold transition-colors">
+            Solicitar muestra
+          </button>
+          <p id="lead-asesoria-status" class="text-sm text-slate-400"></p>
+        </form>
+      </div>
+
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Qué vas a ver</p>
+        <div class="space-y-3 text-sm text-slate-300">
+          <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+            <p class="font-semibold text-slate-100">Prioridad comercial</p>
+            <p class="text-slate-400 mt-1">Qué convocatorias mover primero con cartera de pymes, autónomos o entidades.</p>
+          </div>
+          <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+            <p class="font-semibold text-slate-100">Beneficiario y ámbito</p>
+            <p class="text-slate-400 mt-1">Filtrado por tipo de cliente, sector y comunidad.</p>
+          </div>
+          <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+            <p class="font-semibold text-slate-100">Enlace oficial</p>
+            <p class="text-slate-400 mt-1">Siempre con referencia a la fuente original para validación y tramitación.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('lead-asesoria-form');
+    const status = document.getElementById('lead-asesoria-status');
+
+    form?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      status.textContent = 'Enviando...';
+      status.className = 'text-sm text-slate-400';
+
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch('/api/lead-asesoria', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || 'No se pudo enviar');
+
+        form.reset();
+        status.textContent = 'Recibido. Te contactaremos con una muestra del feed.';
+        status.className = 'text-sm text-emerald-400';
+      } catch (error) {
+        status.textContent = error instanceof Error ? error.message : 'Ha fallado el envío';
+        status.className = 'text-sm text-rose-400';
+      }
+    });
+  </script>
+</Layout>
