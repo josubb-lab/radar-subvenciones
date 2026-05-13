@@ -5,7 +5,7 @@ import { SITE } from '../lib/config'
 import NavBar from '../components/NavBar.astro'
 
 const pageTitle = 'Quiénes somos · Radar Subvenciones'
-const pageDesc  = 'Radar Subvenciones, un producto de BenchDataLab, aplica datos, automatización y filtrado de señal para monitorizar ayudas y subvenciones con foco B2B.'
+const pageDesc  = 'Radar Subvenciones, un producto de BenchDataLab, aplica datos, automatización y filtrado de señal para monitorizar ayudas y subvenciones para asesorías y gestorías.'
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -46,7 +46,7 @@ const jsonLd = {
       <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
         <h2 class="text-lg font-bold text-slate-100 mb-3">Nuestra misión</h2>
         <p class="text-slate-400 text-sm leading-relaxed">
-          Construimos productos especializados de datos que convierten publicaciones dispersas en información operativa. En Radar Subvenciones, eso significa transformar boletines, convocatorias y registros públicos en un feed comercial de ayudas filtradas para uso profesional B2B.
+          Construimos productos especializados de datos que convierten información dispersa en herramientas operativas. En Radar Subvenciones, eso significa transformar señales públicas en un feed comercial de ayudas filtradas para asesorías, gestorías y despachos.
         </p>
       </div>
 
@@ -73,7 +73,7 @@ const jsonLd = {
       </div>
 
       <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
-        <h2 class="text-lg font-bold text-slate-100 mb-3">Producto especializado B2B</h2>
+        <h2 class="text-lg font-bold text-slate-100 mb-3">Producto especializado para despachos</h2>
         <p class="text-slate-400 text-sm leading-relaxed">
           Radar Subvenciones no pretende ser un portal genérico más. Está orientado a asesorías, gestorías, consultoras y despachos que necesitan ahorrar tiempo, detectar oportunidades antes y trabajar con datos filtrados en lugar de boletines sin procesar.
         </p>
@@ -87,6 +87,9 @@ const jsonLd = {
         <a href="mailto:josue@benchdatalab.com" class="text-emerald-400 hover:underline text-sm font-semibold">
           josue@benchdatalab.com
         </a>
+        <p class="text-slate-500 text-sm mt-3">
+          BenchDataLab: <a href="https://benchdatalab.com" class="text-emerald-400 hover:underline" target="_blank" rel="noreferrer">benchdatalab.com</a>
+        </p>
       </div>
 
     </div>
@@ -96,6 +99,7 @@ const jsonLd = {
     <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
       <p>© {new Date().getFullYear()} Radar Subvenciones · Un producto de BenchDataLab</p>
       <nav class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+        <a href="https://benchdatalab.com" class="hover:text-slate-400 transition-colors" target="_blank" rel="noreferrer">BenchDataLab</a>
         <a href="/origen-datos"        class="hover:text-slate-400 transition-colors">Fuentes</a>
         <a href="/aviso-legal"         class="hover:text-slate-400 transition-colors">Aviso legal</a>
         <a href="/politica-privacidad" class="hover:text-slate-400 transition-colors">Privacidad</a>

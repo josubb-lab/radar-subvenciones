@@ -9,11 +9,11 @@ interface Props {
 const { breadcrumb } = Astro.props
 
 const navLinks = [
+  { href: '/',                 label: 'Inicio' },
   { href: '/asesorias',        label: 'Asesorías' },
-  { href: '/sector/empresas',  label: 'Empresas' },
-  { href: '/sector/autonomos', label: 'Autónomos' },
-  { href: '/guias',            label: 'Guías' },
-  { href: '/quienes-somos',    label: 'Nosotros' },
+  { href: '/#como-funciona',   label: 'Cómo funciona' },
+  { href: '/quienes-somos',    label: 'Quiénes somos' },
+  { href: '/#contacto',        label: 'Pedir muestra' },
 ]
 ---
 
@@ -21,11 +21,19 @@ const navLinks = [
   <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
 
     <!-- Logo + breadcrumb -->
-    <div class="flex items-center gap-2 text-sm min-w-0">
+    <div class="flex items-center gap-3 text-sm min-w-0">
       <a href="/" class="font-bold text-slate-100 hover:text-emerald-400 transition-colors shrink-0">
         <span class="text-emerald-400">◈</span>
         <span class="hidden sm:inline"> Radar Subvenciones</span>
         <span class="sm:hidden"> Radar</span>
+      </a>
+      <a
+        href="https://benchdatalab.com"
+        class="hidden lg:inline text-xs text-slate-500 hover:text-slate-300 transition-colors truncate"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Un producto de BenchDataLab
       </a>
       {breadcrumb?.map(item => (
         <>

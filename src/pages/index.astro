@@ -1,38 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro'
-import { createClient } from '@supabase/supabase-js'
 import { SITE } from '../lib/config'
-import { SECTORES, CCAA } from '../lib/taxonomia'
-import { subvencionSlug } from '../lib/slugify'
 import NavBar from '../components/NavBar.astro'
-
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_KEY,
-)
-
-const { data: subvenciones } = await supabase
-  .from('subvenciones')
-  .select('id, titulo, descripcion, fuente, tipo, fecha_pub, url')
-  .order('fecha_pub', { ascending: false, nullsFirst: false })
-  .limit(50)
-
-const { count: totalBD } = await supabase
-  .from('subvenciones')
-  .select('*', { count: 'exact', head: true })
-
-const total = subvenciones?.length ?? 0
-const totalConvocatorias = totalBD ?? 0
-
-const TIPO_META: Record<string, { label: string; color: string }> = {
-  convocatoria: { label: 'Convocatoria',  color: 'text-emerald-400 bg-emerald-950/60 ring-emerald-700/50' },
-  extracto:     { label: 'Extracto BOE',  color: 'text-sky-400 bg-sky-950/60 ring-sky-700/50' },
-  bases:        { label: 'Bases',          color: 'text-amber-400 bg-amber-950/60 ring-amber-700/50' },
-  resolucion:   { label: 'Resolución',    color: 'text-rose-400 bg-rose-950/60 ring-rose-700/50' },
-}
-function tipoMeta(tipo: string) {
-  return TIPO_META[tipo] ?? { label: tipo ?? 'Ayuda', color: 'text-slate-400 bg-slate-800 ring-slate-700/50' }
-}
+import B2BFeedSample from '../components/B2BFeedSample.astro'
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -52,10 +22,10 @@ const jsonLd = {
     {
       '@type': 'Service',
       name: 'Feed de subvenciones para asesorías',
-      description: 'Feed recurrente para gestorías, asesorías y consultoras con convocatorias filtradas y priorizadas.',
+      description: 'Servicio de seguimiento y filtrado de subvenciones para asesorías, gestorías y despachos profesionales.',
       provider: { '@type': 'Organization', name: SITE.nombre, url: SITE.siteUrl },
       areaServed: { '@type': 'Country', name: 'Spain' },
-      serviceType: 'Data feed B2B de subvenciones',
+      serviceType: 'Feed comercial de subvenciones',
       url: `${SITE.siteUrl}/asesorias`,
     },
     {
@@ -63,28 +33,23 @@ const jsonLd = {
       mainEntity: [
         {
           '@type': 'Question',
-          name: '¿Qué es una subvención pública en España?',
-          acceptedAnswer: { '@type': 'Answer', text: 'Una subvención pública es una ayuda económica concedida por organismos del Estado, comunidades autónomas o ayuntamientos a empresas, autónomos o particulares para financiar actividades de interés general, sin obligación de devolución.' },
+          name: '¿Qué entrega Radar Subvenciones?',
+          acceptedAnswer: { '@type': 'Answer', text: 'Entregamos un CSV o Excel con oportunidades filtradas para asesorías y gestorías, incluyendo prioridad, beneficiario, ámbito y enlace oficial.' },
         },
         {
           '@type': 'Question',
-          name: '¿Dónde se publican las convocatorias de subvenciones en España?',
-          acceptedAnswer: { '@type': 'Answer', text: 'Las subvenciones estatales se publican en el Boletín Oficial del Estado (BOE) y en la Base de Datos Nacional de Subvenciones (BDNS). Cada comunidad autónoma tiene además su propio boletín oficial. Radar Subvenciones agrega todas estas fuentes en un solo lugar.' },
+          name: '¿Para quién está pensado el producto?',
+          acceptedAnswer: { '@type': 'Answer', text: 'Está pensado para asesorías, gestorías, despachos y profesionales que necesitan detectar ayudas relevantes para su cartera sin perder tiempo revisando publicaciones una a una.' },
         },
         {
           '@type': 'Question',
-          name: '¿Qué es el BDNS?',
-          acceptedAnswer: { '@type': 'Answer', text: 'El BDNS (Base de Datos Nacional de Subvenciones) es el registro oficial del Ministerio de Hacienda donde se publican todas las convocatorias de subvenciones y ayudas públicas en España.' },
+          name: '¿Se puede contratar de forma puntual o recurrente?',
+          acceptedAnswer: { '@type': 'Answer', text: 'Sí. Hay filtrados puntuales, seguimiento recurrente y cobertura personalizada según cartera, sector o comunidad.' },
         },
         {
           '@type': 'Question',
-          name: '¿Quién puede solicitar subvenciones públicas en España?',
-          acceptedAnswer: { '@type': 'Answer', text: 'Pueden solicitar subvenciones personas físicas (autónomos, particulares), personas jurídicas (empresas, pymes, asociaciones, ONG) y entidades públicas, dependiendo de los requisitos de cada convocatoria.' },
-        },
-        {
-          '@type': 'Question',
-          name: '¿Con qué frecuencia se actualiza Radar Subvenciones?',
-          acceptedAnswer: { '@type': 'Answer', text: 'Radar Subvenciones se actualiza automáticamente cada día laborable extrayendo las nuevas convocatorias del BOE y el BDNS, por lo que siempre muestra las ayudas más recientes disponibles.' },
+          name: '¿Cómo se solicita una muestra?',
+          acceptedAnswer: { '@type': 'Answer', text: 'Puedes dejar tus datos en la web y recibir una muestra de Radar Subvenciones para valorar si encaja con tu despacho.' },
         },
       ],
     },
@@ -96,20 +61,13 @@ const jsonLd = {
 
   <NavBar />
 
-  <!-- HERO -->
   <section class="bg-gradient-to-b from-emerald-950/30 to-slate-950 border-b border-slate-800/60">
     <div class="max-w-5xl mx-auto px-4 py-14 lg:py-20">
-      <p class="text-emerald-400 text-xs font-semibold uppercase tracking-widest mb-3">
-        Radar Subvenciones · Un producto de BenchDataLab
-      </p>
-      <p class="text-xs text-slate-500 mb-3">
-        BenchDataLab — laboratorio independiente de datos
-      </p>
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-50 leading-tight mb-4">
         Feed comercial de subvenciones<br class="hidden sm:block"> para asesorías y gestorías
       </h1>
-      <p class="text-slate-400 text-lg max-w-2xl mb-8">
-        Radar Subvenciones automatiza la detección y el filtrado de ayudas para que tu despacho reciba oportunidades accionables en CSV o Excel, sin revisar boletines durante horas.
+      <p class="text-slate-400 text-lg max-w-3xl mb-8">
+        Radar Subvenciones ayuda a despachos y profesionales a seguir ayudas relevantes con datos filtrados, monitorización continua y entregables CSV o Excel listos para trabajar.
       </p>
 
       <div class="flex flex-wrap gap-3 mb-8">
@@ -127,150 +85,93 @@ const jsonLd = {
         </a>
       </div>
 
-      <!-- ESTADÍSTICAS -->
-      <div class="flex flex-wrap gap-6 mb-8">
-        <div>
-          <p class="text-2xl font-extrabold text-emerald-400">{totalConvocatorias.toLocaleString('es-ES')}+</p>
-          <p class="text-xs text-slate-500 mt-0.5">convocatorias monitorizadas</p>
-        </div>
-        <div>
-          <p class="text-2xl font-extrabold text-emerald-400">17</p>
-          <p class="text-xs text-slate-500 mt-0.5">comunidades autónomas</p>
-        </div>
-        <div>
-          <p class="text-2xl font-extrabold text-emerald-400">Diario</p>
-          <p class="text-xs text-slate-500 mt-0.5">ingesta y clasificación</p>
-        </div>
-        <div>
-          <p class="text-2xl font-extrabold text-emerald-400">B2B</p>
-          <p class="text-xs text-slate-500 mt-0.5">feed para despachos</p>
-        </div>
-      </div>
-
       <div class="grid md:grid-cols-3 gap-4">
         <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
-          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Qué vendes</p>
-          <p class="text-sm text-slate-300">Ahorro de tiempo, detección temprana y señal comercial útil para clientes reales.</p>
+          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Ahorro de tiempo</p>
+          <p class="text-sm text-slate-300">Menos horas revisando publicaciones y más foco en mover oportunidades útiles para tus clientes.</p>
         </div>
         <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
-          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Qué recibes</p>
-          <p class="text-sm text-slate-300">CSV o Excel con oportunidades filtradas, score comercial, prioridad, ámbito, sector, beneficiario y enlace oficial.</p>
+          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Oportunidades filtradas</p>
+          <p class="text-sm text-slate-300">CSV o Excel con prioridad, ámbito, beneficiario, señal comercial y enlace oficial.</p>
         </div>
         <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
-          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Cómo opera</p>
-          <p class="text-sm text-slate-300">Monitorización, filtrado de señal y automatización de datos sobre BDNS, BOE y fuentes relacionadas.</p>
+          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Seguimiento profesional</p>
+          <p class="text-sm text-slate-300">Monitorización, filtrado y cobertura adaptable para asesorías, gestorías y despachos.</p>
         </div>
       </div>
     </div>
   </section>
 
-<main class="max-w-5xl mx-auto px-4 py-10 grid lg:grid-cols-[1fr_300px] gap-10">
-
-    <!-- LISTADO PRINCIPAL -->
-    <section>
-      <div class="mb-5">
-        <p class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Señal pública</p>
-        <h2 class="text-lg font-bold text-slate-200">Muestra pública para SEO y validación</h2>
-        <p class="text-sm text-slate-500 mt-1">La parte operativa para despachos está en el feed comercial filtrado de Radar Subvenciones.</p>
-      </div>
-
-      {(subvenciones ?? []).length === 0 ? (
-        <p class="text-slate-500 text-sm">El radar actualiza diariamente. Vuelve pronto.</p>
-      ) : (
-        <ol class="space-y-4">
-          {(subvenciones ?? []).map(s => {
-            const tm = tipoMeta(s.tipo)
-            const slug = subvencionSlug(s.titulo ?? '', s.id)
-            const fecha = s.fecha_pub
-              ? new Date(s.fecha_pub).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
-              : null
-            return (
-              <li class="rounded-xl border border-slate-800 bg-slate-900/50 hover:border-emerald-800/60 hover:bg-slate-900 transition-colors overflow-hidden flex">
-                <div class="w-1 bg-emerald-700/40 shrink-0 group-hover:bg-emerald-500"></div>
-                <div class="p-5 flex-1 min-w-0">
-                  <div class="flex flex-wrap items-center gap-2 mb-2">
-                    <span class={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ring-1 ${tm.color}`}>
-                      {tm.label}
-                    </span>
-                    {fecha && <time class="text-xs text-slate-500 ml-auto">{fecha}</time>}
-                  </div>
-
-                  <a href={`/subvencion/${slug}`} class="block text-base font-semibold text-slate-100 leading-snug mb-2 hover:text-emerald-400 transition-colors">
-                    {s.titulo}
-                  </a>
-
-                  {s.descripcion && (
-                    <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
-                      {s.descripcion.slice(0, 200)}
-                    </p>
-                  )}
-                </div>
-              </li>
-            )
-          })}
-        </ol>
-      )}
-    </section>
-
-    <!-- SIDEBAR -->
-    <aside class="space-y-6">
-
-      <!-- POR CCAA -->
-      <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
-        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Por comunidad autónoma</h3>
-        <ul class="space-y-1">
-          {CCAA.map(c => (
-            <li>
-              <a href={`/ccaa/${c.slug}`} class="text-sm text-slate-400 hover:text-emerald-400 transition-colors block py-0.5">
-                {c.nombre}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-
-      <!-- CTA ASESORIAS -->
-      <div class="rounded-xl border border-emerald-800/40 bg-emerald-950/20 p-5">
-        <p class="text-xs font-semibold text-emerald-400 uppercase tracking-widest mb-2">Producto para despachos</p>
-        <h3 class="text-sm font-bold text-slate-200 mb-2">
-          Radar Subvenciones
-        </h3>
-        <p class="text-xs text-slate-400 mb-4">
-          Un producto de BenchDataLab para recibir subvenciones filtradas, priorizadas y listas para trabajar con tu cartera.
-        </p>
-        <div class="space-y-2">
-          <a
-            href="/asesorias"
-            class="block text-center px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-colors"
-          >
-            Pedir muestra del feed
-          </a>
-          <a
-            href="/asesorias#como-funciona"
-            class="block text-center px-4 py-2 rounded-lg border border-slate-700 bg-slate-800 hover:border-emerald-600 hover:text-emerald-400 text-slate-300 text-xs font-semibold transition-colors"
-          >
-            Ver cómo funciona
-          </a>
+  <main class="max-w-5xl mx-auto px-4 py-10 space-y-10">
+    <section id="como-funciona" class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+      <h2 class="text-xl font-bold text-slate-100 mb-4">Cómo funciona</h2>
+      <div class="grid md:grid-cols-4 gap-4 text-sm text-slate-300">
+        <div>
+          <p class="text-emerald-400 font-semibold mb-1">1. Seguimiento</p>
+          <p>Seguimos ayudas relevantes para que tu despacho no dependa de revisar publicaciones una a una.</p>
+        </div>
+        <div>
+          <p class="text-emerald-400 font-semibold mb-1">2. Filtrado</p>
+          <p>Quitamos ruido y priorizamos oportunidades con valor para pymes, autónomos, empresas y empleo.</p>
+        </div>
+        <div>
+          <p class="text-emerald-400 font-semibold mb-1">3. Entrega</p>
+          <p>Recibes un CSV o Excel claro, preparado para compartir, revisar o activar con tu cartera.</p>
+        </div>
+        <div>
+          <p class="text-emerald-400 font-semibold mb-1">4. Acción</p>
+          <p>Tu equipo decide qué mover antes y con qué cobertura: puntual, recurrente o personalizada.</p>
         </div>
       </div>
+    </section>
 
-      <!-- ADSENSE -->
-      <div class="min-h-[250px] rounded-xl border border-slate-800/40 bg-slate-900/20 flex items-center justify-center">
-        <p class="text-xs text-slate-700">Publicidad</p>
+    <section class="grid md:grid-cols-3 gap-5">
+      <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Filtrado puntual</p>
+        <p class="text-sm text-slate-300">Selecciones concretas para una campaña, un cliente relevante o una necesidad inmediata.</p>
+      </article>
+      <article class="rounded-2xl border border-emerald-800/40 bg-emerald-950/20 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Seguimiento recurrente</p>
+        <p class="text-sm text-slate-300">Cobertura periódica para despachos que necesitan detectar oportunidades de forma continua.</p>
+      </article>
+      <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Cobertura personalizada</p>
+        <p class="text-sm text-slate-300">Ajustes por tipo de cartera, comunidad, vertical o perfil de cliente.</p>
+      </article>
+    </section>
+
+    <B2BFeedSample />
+
+    <section class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+      <h2 class="text-xl font-bold text-slate-100 mb-4">Preguntas frecuentes</h2>
+      <div class="grid md:grid-cols-2 gap-4 text-sm">
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <p class="font-semibold text-slate-100 mb-2">¿Qué recibo exactamente?</p>
+          <p class="text-slate-400">Un CSV o Excel con oportunidades filtradas, prioridad, beneficiario, ámbito y enlace oficial.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <p class="font-semibold text-slate-100 mb-2">¿Es solo para gestorías grandes?</p>
+          <p class="text-slate-400">No. Encaja tanto en despachos pequeños como en equipos con seguimiento recurrente de ayudas.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <p class="font-semibold text-slate-100 mb-2">¿Se puede pedir algo puntual?</p>
+          <p class="text-slate-400">Sí. Hay filtrados puntuales, seguimiento recurrente y cobertura personalizada.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <p class="font-semibold text-slate-100 mb-2">¿Cómo solicito una muestra?</p>
+          <p class="text-slate-400">Dejas tus datos y te enviamos una muestra para valorar encaje con tu despacho.</p>
+        </div>
       </div>
+    </section>
 
-    </aside>
-  </main>
-
-  <section id="lead-b2b-home" class="max-w-5xl mx-auto px-4 pb-12">
+    <section id="contacto" class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 lg:p-7">
     <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 lg:p-7">
       <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-6 items-start">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Captación B2B</p>
+          <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Solicitud de muestra</p>
           <h2 class="text-2xl font-bold text-slate-100 mb-3">Pide una muestra de Radar Subvenciones</h2>
           <p class="text-sm text-slate-400">
-            Si llevas pymes, autónomos o empresas, te enseñamos cómo llega la información operativa: oportunidades filtradas, score comercial, prioridad, sector, ámbito y enlace oficial.
+            Si llevas pymes, autónomos o empresas, te enseñamos cómo llega la información operativa: oportunidades filtradas, prioridad, sector, ámbito y enlace oficial.
           </p>
           <p class="text-sm text-slate-500 mt-4">
             Contacto directo: <a href="mailto:josue@benchdatalab.com" class="text-emerald-400 hover:underline">josue@benchdatalab.com</a>
@@ -311,12 +212,14 @@ const jsonLd = {
       </div>
     </div>
   </section>
+  </main>
 
   <!-- FOOTER -->
   <footer class="border-t border-slate-800/60 mt-10">
     <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
       <p>© {new Date().getFullYear()} Radar Subvenciones · Un producto de BenchDataLab</p>
       <nav class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+        <a href="https://benchdatalab.com" class="hover:text-slate-400 transition-colors" target="_blank" rel="noreferrer">BenchDataLab</a>
         <a href="/origen-datos"        class="hover:text-slate-400 transition-colors">Fuentes</a>
         <a href="/aviso-legal"         class="hover:text-slate-400 transition-colors">Aviso legal</a>
         <a href="/politica-privacidad" class="hover:text-slate-400 transition-colors">Privacidad</a>

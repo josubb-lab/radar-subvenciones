@@ -29,7 +29,6 @@ const jsonLd = {
   <main class="max-w-5xl mx-auto px-4 py-10 space-y-10">
     <section class="rounded-3xl border border-slate-800 bg-gradient-to-br from-emerald-950/40 via-slate-900 to-slate-950 p-8 lg:p-10">
       <p class="text-emerald-400 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Radar Subvenciones · Un producto de BenchDataLab</p>
-      <p class="text-xs text-slate-500 mb-3">BenchDataLab — laboratorio independiente de datos</p>
       <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-50 leading-tight mb-4">
         Feed CSV/Excel de subvenciones filtradas para asesorías y gestorías
       </h1>
@@ -67,6 +66,21 @@ const jsonLd = {
       </div>
     </section>
 
+    <section class="grid lg:grid-cols-3 gap-5">
+      <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Filtrados puntuales</p>
+        <p class="text-sm text-slate-300">Para campañas concretas, clientes clave o necesidades de revisión rápida.</p>
+      </article>
+      <article class="rounded-2xl border border-emerald-800/40 bg-emerald-950/20 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Seguimiento recurrente</p>
+        <p class="text-sm text-slate-300">Para despachos que necesitan un flujo estable de oportunidades filtradas.</p>
+      </article>
+      <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Cobertura personalizada</p>
+        <p class="text-sm text-slate-300">Ajustes por comunidad, vertical, tipo de cartera o perfil de cliente.</p>
+      </article>
+    </section>
+
     <section id="como-funciona" class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
       <h2 class="text-xl font-bold text-slate-100 mb-4">Cómo funciona</h2>
       <div class="grid md:grid-cols-4 gap-4 text-sm text-slate-300">
@@ -89,13 +103,31 @@ const jsonLd = {
       </div>
     </section>
 
+    <section class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+      <h2 class="text-xl font-bold text-slate-100 mb-4">Casos de uso para despachos</h2>
+      <div class="grid md:grid-cols-3 gap-4 text-sm text-slate-300">
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <p class="font-semibold text-slate-100 mb-2">Cartera pyme</p>
+          <p class="text-slate-400">Seguimiento de ayudas para inversión, digitalización, empleo y expansión.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <p class="font-semibold text-slate-100 mb-2">Autónomos y microempresa</p>
+          <p class="text-slate-400">Detección rápida de convocatorias útiles sin revisar boletines completos.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <p class="font-semibold text-slate-100 mb-2">Cobertura especializada</p>
+          <p class="text-slate-400">Apoyo para despachos con sectores o territorios concretos que requieren más foco.</p>
+        </div>
+      </div>
+    </section>
+
     <B2BFeedSample />
 
     <section class="grid lg:grid-cols-3 gap-5">
       <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
         <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Radar Base</p>
         <h2 class="text-xl font-bold text-slate-100 mb-2">Desde 149 €/mes</h2>
-        <p class="text-sm text-slate-400 mb-4">Feed semanal básico según cobertura y frecuencia.</p>
+        <p class="text-sm text-slate-400 mb-4">Seguimiento operativo básico según cobertura y frecuencia.</p>
         <ul class="space-y-2 text-sm text-slate-300">
           <li>Convocatorias BOE y BDNS</li>
           <li>CSV o Excel semanal</li>
@@ -106,7 +138,7 @@ const jsonLd = {
       <article class="rounded-2xl border border-emerald-700/40 bg-emerald-950/20 p-6">
         <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Radar Pro</p>
         <h2 class="text-xl font-bold text-slate-100 mb-2">Según cobertura</h2>
-        <p class="text-sm text-slate-400 mb-4">La opción recomendada para despachos con cartera activa y varios sectores.</p>
+        <p class="text-sm text-slate-400 mb-4">La opción recomendada para despachos con cartera activa, varios sectores o seguimiento recurrente.</p>
         <ul class="space-y-2 text-sm text-slate-300">
           <li>Todo lo de Base</li>
           <li>Prioridad comercial</li>
@@ -117,7 +149,7 @@ const jsonLd = {
       <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
         <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Radar Premium</p>
         <h2 class="text-xl font-bold text-slate-100 mb-2">A medida</h2>
-        <p class="text-sm text-slate-400 mb-4">Feed adaptado a comunidad, sector o cartera concreta.</p>
+        <p class="text-sm text-slate-400 mb-4">Cobertura adaptada a comunidad, sector, cartera concreta o necesidad puntual.</p>
         <ul class="space-y-2 text-sm text-slate-300">
           <li>Segmentación a medida</li>
           <li>Enfoque por vertical</li>
@@ -219,6 +251,7 @@ const jsonLd = {
     <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
       <p>© {new Date().getFullYear()} Radar Subvenciones · Un producto de BenchDataLab</p>
       <nav class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+        <a href="https://benchdatalab.com" class="hover:text-slate-400 transition-colors" target="_blank" rel="noreferrer">BenchDataLab</a>
         <a href="/origen-datos"        class="hover:text-slate-400 transition-colors">Fuentes</a>
         <a href="/aviso-legal"         class="hover:text-slate-400 transition-colors">Aviso legal</a>
         <a href="/politica-privacidad" class="hover:text-slate-400 transition-colors">Privacidad</a>
