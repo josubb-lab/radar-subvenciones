@@ -76,6 +76,12 @@ Fuentes actuales:
 - BOE
 - BDNS
 
+Notas sobre fuentes:
+- BDNS es fuente estructurada oficial.
+- scraper/fuente-boe.js usa Google News RSS como mecanismo de discovery para encontrar publicaciones relacionadas con BOE, boletines y convocatorias.
+- Google News RSS es una dependencia de discovery; no debe confundirse con una fuente oficial de verdad ni con una fuente estructurada final.
+- Cualquier mejora futura debe preservar la separación entre discovery y fuente oficial.
+
 Motor principal:
 
 scraper/motor.js
