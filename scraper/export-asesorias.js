@@ -1,11 +1,13 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { enrichSubvencion, recogerSubvenciones, requisitosClave, resumenComercial } from './motor.js';
+import { esCategoriaExportable, puntuarComercial } from './scoring-comercial.js';
 import { SECTOR_LABELS } from './taxonomia.js';
 
 const fuenteArg = process.argv.find(a => a.startsWith('--fuente='))?.split('=')[1] ?? 'todas';
 const diasArg = Number(process.argv.find(a => a.startsWith('--dias='))?.split('=')[1] ?? '10');
 const salidaArg = process.argv.find(a => a.startsWith('--salida='))?.split('=')[1];
+const incluirRuidoArg = process.argv.find(a => a.startsWith('--incluir-ruido='))?.split('=')[1] === 'true';
 
 function toDate(value) {
   if (!value) return null;
@@ -48,6 +50,7 @@ function filterRecientes(items, dias) {
 
 function enrich(item, now) {
   const enriched = enrichSubvencion(item, now);
+  const scoring = puntuarComercial(enriched);
 
   return {
     fecha_generacion: formatDate(now.toISOString()),
@@ -71,6 +74,10 @@ function enrich(item, now) {
     resumen_comercial: resumenComercial(enriched),
     requisitos_clave: requisitosClave(enriched),
     url_oficial: enriched.url || '',
+    score_comercial: scoring.score_comercial,
+    categoria_comercial: scoring.categoria_comercial,
+    motivo_comercial: scoring.motivo_comercial,
+    excluir_feed: scoring.excluir_feed,
   };
 }
 
@@ -86,6 +93,9 @@ async function main() {
         String(b.fecha_publicacion).localeCompare(String(a.fecha_publicacion)) ||
         a.titulo.localeCompare(b.titulo);
     });
+  const exportables = incluirRuidoArg
+    ? enriquecidas
+    : enriquecidas.filter(item => esCategoriaExportable(item.categoria_comercial) && item.excluir_feed !== 'true');
 
   const outDir = path.resolve('exports');
   const outFile = salidaArg || `feed-asesorias-${formatDate(now.toISOString())}.csv`;
@@ -115,12 +125,17 @@ async function main() {
     'resumen_comercial',
     'requisitos_clave',
     'url_oficial',
+    'score_comercial',
+    'categoria_comercial',
+    'motivo_comercial',
+    'excluir_feed',
   ];
 
-  await fs.writeFile(outPath, toCsv(enriquecidas, columns), 'utf8');
+  await fs.writeFile(outPath, toCsv(exportables, columns), 'utf8');
 
   console.log(`Feed generado: ${outPath}`);
-  console.log(`Registros exportados: ${enriquecidas.length}`);
+  console.log(`Registros antes del filtro comercial: ${enriquecidas.length}`);
+  console.log(`Registros exportados: ${exportables.length}`);
 }
 
 main().catch(err => {
