@@ -49,7 +49,7 @@ const jsonLd = {
         {
           '@type': 'Question',
           name: '¿Cómo se solicita una muestra?',
-          acceptedAnswer: { '@type': 'Answer', text: 'Puedes dejar tus datos en la web y recibir una muestra de Radar Subvenciones para valorar si encaja con tu despacho.' },
+          acceptedAnswer: { '@type': 'Answer', text: 'Puedes escribir a josue@benchdatalab.com para pedir una muestra de Radar Subvenciones y valorar si encaja con tu despacho.' },
         },
       ],
     },
@@ -67,15 +67,15 @@ const jsonLd = {
         Feed comercial de subvenciones<br class="hidden sm:block"> para asesorías y gestorías
       </h1>
       <p class="text-slate-400 text-lg max-w-3xl mb-8">
-        Radar Subvenciones ayuda a despachos y profesionales a seguir ayudas relevantes con datos filtrados, monitorización continua y entregables CSV o Excel listos para trabajar.
+        Radar Subvenciones ayuda a despachos y profesionales a trabajar con oportunidades filtradas, señal útil y entregables CSV o Excel listos para activar con su cartera.
       </p>
 
       <div class="flex flex-wrap gap-3 mb-8">
         <a
-          href="/asesorias"
+          href="mailto:josue@benchdatalab.com?subject=Solicitud%20Radar%20Subvenciones"
           class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold transition-colors"
         >
-          Pedir muestra del feed
+          Escribir para pedir muestra
         </a>
         <a
           href="/asesorias#como-funciona"
@@ -86,15 +86,15 @@ const jsonLd = {
       </div>
 
       <div class="grid md:grid-cols-3 gap-4">
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/70 shadow-[0_0_0_1px_rgba(15,23,42,0.2)] p-4">
           <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Ahorro de tiempo</p>
           <p class="text-sm text-slate-300">Menos horas revisando publicaciones y más foco en mover oportunidades útiles para tus clientes.</p>
         </div>
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
+        <div class="rounded-2xl border border-emerald-900/60 bg-emerald-950/20 p-4">
           <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Oportunidades filtradas</p>
           <p class="text-sm text-slate-300">CSV o Excel con prioridad, ámbito, beneficiario, señal comercial y enlace oficial.</p>
         </div>
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/70 shadow-[0_0_0_1px_rgba(15,23,42,0.2)] p-4">
           <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Seguimiento profesional</p>
           <p class="text-sm text-slate-300">Monitorización, filtrado y cobertura adaptable para asesorías, gestorías y despachos.</p>
         </div>
@@ -103,7 +103,7 @@ const jsonLd = {
   </section>
 
   <main class="max-w-5xl mx-auto px-4 py-10 space-y-10">
-    <section id="como-funciona" class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+    <section id="como-funciona" class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
       <h2 class="text-xl font-bold text-slate-100 mb-4">Cómo funciona</h2>
       <div class="grid md:grid-cols-4 gap-4 text-sm text-slate-300">
         <div>
@@ -126,7 +126,7 @@ const jsonLd = {
     </section>
 
     <section class="grid md:grid-cols-3 gap-5">
-      <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+      <article class="rounded-2xl border border-slate-800 bg-slate-900/65 p-6">
         <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Filtrado puntual</p>
         <p class="text-sm text-slate-300">Selecciones concretas para una campaña, un cliente relevante o una necesidad inmediata.</p>
       </article>
@@ -134,10 +134,28 @@ const jsonLd = {
         <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Seguimiento recurrente</p>
         <p class="text-sm text-slate-300">Cobertura periódica para despachos que necesitan detectar oportunidades de forma continua.</p>
       </article>
-      <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+      <article class="rounded-2xl border border-slate-800 bg-slate-900/65 p-6">
         <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">Cobertura personalizada</p>
         <p class="text-sm text-slate-300">Ajustes por tipo de cartera, comunidad, vertical o perfil de cliente.</p>
       </article>
+    </section>
+
+    <section class="rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900/80 to-slate-950 p-6">
+      <h2 class="text-xl font-bold text-slate-100 mb-4">Casos de uso</h2>
+      <div class="grid md:grid-cols-3 gap-4 text-sm">
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <p class="font-semibold text-slate-100 mb-2">Despachos con cartera pyme</p>
+          <p class="text-slate-400">Priorización de ayudas accionables para inversión, contratación, digitalización o expansión.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <p class="font-semibold text-slate-100 mb-2">Gestorías locales</p>
+          <p class="text-slate-400">Filtrados puntuales para comercio local, hostelería, autónomos o empresas de la zona.</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <p class="font-semibold text-slate-100 mb-2">Coberturas a medida</p>
+          <p class="text-slate-400">Seguimiento recurrente por comunidad, tipo de cliente o vertical con señal útil desde el primer vistazo.</p>
+        </div>
+      </div>
     </section>
 
     <B2BFeedSample />
@@ -159,115 +177,59 @@ const jsonLd = {
         </div>
         <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
           <p class="font-semibold text-slate-100 mb-2">¿Cómo solicito una muestra?</p>
-          <p class="text-slate-400">Dejas tus datos y te enviamos una muestra para valorar encaje con tu despacho.</p>
+          <p class="text-slate-400">Escribes a josue@benchdatalab.com y te enviamos una muestra para valorar encaje con tu despacho.</p>
         </div>
       </div>
     </section>
 
-    <section id="contacto" class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 lg:p-7">
-    <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 lg:p-7">
-      <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-6 items-start">
+    <section id="contacto" class="rounded-2xl border border-emerald-900/50 bg-gradient-to-br from-emerald-950/30 to-slate-950 p-6 lg:p-7">
+      <div class="grid lg:grid-cols-[0.95fr_1.05fr] gap-6 items-start">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Solicitud de muestra</p>
-          <h2 class="text-2xl font-bold text-slate-100 mb-3">Pide una muestra de Radar Subvenciones</h2>
+          <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Contacto por email</p>
+          <h2 class="text-2xl font-bold text-slate-100 mb-3">Pide una muestra o plantea tu cobertura</h2>
           <p class="text-sm text-slate-400">
-            Si llevas pymes, autónomos o empresas, te enseñamos cómo llega la información operativa: oportunidades filtradas, prioridad, sector, ámbito y enlace oficial.
+            Si llevas pymes, autónomos o empresas, puedes escribir directamente para pedir una muestra, consultar un filtrado puntual o valorar un seguimiento recurrente.
           </p>
           <p class="text-sm text-slate-500 mt-4">
             Contacto directo: <a href="mailto:josue@benchdatalab.com" class="text-emerald-400 hover:underline">josue@benchdatalab.com</a>
           </p>
         </div>
-        <form id="lead-home-form" class="grid sm:grid-cols-2 gap-4">
-          <input type="hidden" name="tipo_despacho" value="Lead desde home" />
-          <input type="hidden" name="clientes" value="" />
-          <label class="block sm:col-span-1">
-            <span class="text-xs text-slate-400 mb-1 block">Nombre</span>
-            <input name="nombre" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500" />
-          </label>
-          <label class="block sm:col-span-1">
-            <span class="text-xs text-slate-400 mb-1 block">Empresa</span>
-            <input name="empresa" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500" />
-          </label>
-          <label class="block sm:col-span-2">
-            <span class="text-xs text-slate-400 mb-1 block">Email profesional</span>
-            <input type="email" name="email" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500" />
-          </label>
-          <label class="block sm:col-span-2">
-            <span class="text-xs text-slate-400 mb-1 block">Interés principal</span>
-            <select name="interes" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500">
-              <option value="">No especificado</option>
-              <option>Feed semanal</option>
-              <option>Alertas urgentes</option>
-              <option>Segmentación por sector</option>
-              <option>Segmentación por comunidad</option>
-            </select>
-          </label>
-          <div class="sm:col-span-2 flex flex-wrap items-center gap-3">
-            <button type="submit" class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold transition-colors">
-              Pedir muestra del feed
-            </button>
-            <p id="lead-home-status" class="text-sm text-slate-400"></p>
-          </div>
-          <p class="sm:col-span-2 text-xs text-slate-500">Usaremos tus datos solo para responder y enviarte una muestra de Radar Subvenciones. Contacto profesional: josue@benchdatalab.com.</p>
-        </form>
+        <div class="space-y-3">
+          <a href="mailto:josue@benchdatalab.com?subject=Solicitud%20Radar%20Subvenciones" class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-4 text-sm text-slate-200 hover:border-emerald-700/60 hover:text-white transition-colors">
+            <span>Escribir para pedir muestra</span>
+            <span class="text-emerald-400">josue@benchdatalab.com</span>
+          </a>
+          <a href="mailto:josue@benchdatalab.com?subject=Filtrado%20puntual%20Radar%20Subvenciones" class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-4 text-sm text-slate-200 hover:border-emerald-700/60 hover:text-white transition-colors">
+            <span>Solicitar filtrado puntual</span>
+            <span class="text-slate-500">por sector, comunidad o cartera</span>
+          </a>
+          <a href="mailto:josue@benchdatalab.com?subject=Seguimiento%20recurrente%20Radar%20Subvenciones" class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-4 text-sm text-slate-200 hover:border-emerald-700/60 hover:text-white transition-colors">
+            <span>Consultar seguimiento recurrente</span>
+            <span class="text-slate-500">cobertura periódica</span>
+          </a>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
   </main>
 
-  <!-- FOOTER -->
   <footer class="border-t border-slate-800/60 mt-10">
-    <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
-      <p>© {new Date().getFullYear()} Radar Subvenciones · Un producto de BenchDataLab</p>
-      <nav class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
-        <a href="https://benchdatalab.com" class="hover:text-slate-400 transition-colors" target="_blank" rel="noreferrer">BenchDataLab</a>
-        <a href="/origen-datos"        class="hover:text-slate-400 transition-colors">Fuentes</a>
-        <a href="/aviso-legal"         class="hover:text-slate-400 transition-colors">Aviso legal</a>
-        <a href="/politica-privacidad" class="hover:text-slate-400 transition-colors">Privacidad</a>
-        <a href="/politica-cookies"    class="hover:text-slate-400 transition-colors">Cookies</a>
+    <div class="max-w-5xl mx-auto px-4 py-8 grid md:grid-cols-[1.1fr_0.9fr] gap-6 text-xs text-slate-500">
+      <div>
+        <p class="text-slate-200 font-semibold">Radar Subvenciones</p>
+        <p class="mt-1">Un producto de BenchDataLab</p>
+        <p class="mt-1">laboratorio independiente de datos</p>
+        <p class="mt-3">
+          Contacto:
+          <a href="mailto:josue@benchdatalab.com" class="text-emerald-400 hover:underline">josue@benchdatalab.com</a>
+        </p>
+      </div>
+      <nav class="flex flex-wrap content-start gap-x-4 gap-y-2 justify-start md:justify-end">
+        <a href="/" class="hover:text-slate-300 transition-colors">Inicio</a>
+        <a href="/asesorias" class="hover:text-slate-300 transition-colors">Asesorías</a>
+        <a href="/quienes-somos" class="hover:text-slate-300 transition-colors">Quiénes somos</a>
+        <a href="https://benchdatalab.com" class="hover:text-slate-300 transition-colors" target="_blank" rel="noreferrer">BenchDataLab</a>
       </nav>
     </div>
   </footer>
-
-  <script>
-    async function bindLeadForm(formId, statusId) {
-      const form = document.getElementById(formId);
-      const status = document.getElementById(statusId);
-      if (!(form instanceof HTMLFormElement) || !(status instanceof HTMLElement)) return;
-
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        status.textContent = 'Enviando...';
-        status.className = 'text-sm text-slate-400';
-
-        const formData = new FormData(form);
-        const payload = Object.fromEntries(formData.entries());
-
-        try {
-          const res = await fetch('/api/lead-asesoria', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok) throw new Error(data.error || 'No se pudo enviar');
-          if (data.ok !== true) throw new Error('Respuesta inesperada del servidor');
-          form.reset();
-          if (data.fallback) {
-            status.innerHTML = 'No hemos podido registrar el formulario automaticamente. Escribenos a <a href="mailto:josue@benchdatalab.com" class="text-emerald-400 underline">josue@benchdatalab.com</a> y te enviamos la muestra.';
-            status.className = 'text-sm text-amber-300';
-          } else {
-            status.textContent = 'Recibido. Te contactaremos con una muestra del feed.';
-            status.className = 'text-sm text-emerald-400';
-          }
-        } catch (error) {
-          status.textContent = error instanceof Error ? error.message : 'Ha fallado el envío';
-          status.className = 'text-sm text-rose-400';
-        }
-      });
-    }
-
-    bindLeadForm('lead-home-form', 'lead-home-status');
-  </script>
 
 </Layout>
