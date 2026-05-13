@@ -60,6 +60,13 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (!error) return json({ ok: true })
 
+    console.warn('[lead-asesoria] Supabase insert error', {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+    })
+
     // Duplicado: tratamos la solicitud como recibida.
     if (error.code === '23505') return json({ ok: true, duplicate: true })
 
