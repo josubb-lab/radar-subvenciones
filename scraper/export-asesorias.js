@@ -39,6 +39,57 @@ function toCsv(rows, columns) {
   return [header, ...lines].join('\n');
 }
 
+function countBy(rows, field) {
+  return rows.reduce((acc, row) => {
+    const key = String(row[field] || 'Sin valor');
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+}
+
+function topMotivos(rows, limit = 10) {
+  const counts = {};
+  for (const row of rows) {
+    const motivos = String(row.motivo_comercial || '')
+      .split('|')
+      .map(motivo => motivo.trim())
+      .filter(Boolean);
+    for (const motivo of motivos) counts[motivo] = (counts[motivo] || 0) + 1;
+  }
+
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, limit)
+    .map(([motivo, total]) => ({ motivo, total }));
+}
+
+function buildMetrics({ now, todas, recientes, enriquecidas, exportables, outPath, metricsPath }) {
+  const scores = enriquecidas
+    .map(row => Number(row.score_comercial))
+    .filter(score => Number.isFinite(score));
+  const scoreSum = scores.reduce((sum, score) => sum + score, 0);
+
+  return {
+    fuente: fuenteArg,
+    dias: diasArg,
+    incluir_ruido: incluirRuidoArg,
+    total_recogidas: todas.length,
+    total_recientes: recientes.length,
+    total_antes_filtro_comercial: enriquecidas.length,
+    total_exportadas: exportables.length,
+    distribucion_categoria_comercial: countBy(enriquecidas, 'categoria_comercial'),
+    total_excluir_feed_true: enriquecidas.filter(row => row.excluir_feed === 'true').length,
+    total_sin_fecha_cierre: enriquecidas.filter(row => !row.fecha_cierre).length,
+    score_min: scores.length > 0 ? Math.min(...scores) : null,
+    score_max: scores.length > 0 ? Math.max(...scores) : null,
+    score_promedio: scores.length > 0 ? Number((scoreSum / scores.length).toFixed(2)) : null,
+    top_motivos_comerciales: topMotivos(enriquecidas),
+    csv_path: outPath,
+    metrics_path: metricsPath,
+    fecha_generacion: now.toISOString(),
+  };
+}
+
 function filterRecientes(items, dias) {
   const now = new Date();
   return items.filter(item => {
@@ -100,6 +151,7 @@ async function main() {
   const outDir = path.resolve('exports');
   const outFile = salidaArg || `feed-asesorias-${formatDate(now.toISOString())}.csv`;
   const outPath = path.join(outDir, outFile);
+  const metricsPath = `${outPath}.metrics.json`;
 
   await fs.mkdir(outDir, { recursive: true });
 
@@ -132,10 +184,19 @@ async function main() {
   ];
 
   await fs.writeFile(outPath, toCsv(exportables, columns), 'utf8');
+  const metrics = buildMetrics({ now, todas, recientes, enriquecidas, exportables, outPath, metricsPath });
+  await fs.writeFile(metricsPath, `${JSON.stringify(metrics, null, 2)}\n`, 'utf8');
 
   console.log(`Feed generado: ${outPath}`);
+  console.log(`Metricas generadas: ${metricsPath}`);
+  console.log(`Registros recogidos: ${metrics.total_recogidas}`);
+  console.log(`Registros recientes: ${metrics.total_recientes}`);
   console.log(`Registros antes del filtro comercial: ${enriquecidas.length}`);
   console.log(`Registros exportados: ${exportables.length}`);
+  console.log(`Distribucion comercial: ${JSON.stringify(metrics.distribucion_categoria_comercial)}`);
+  console.log(`Excluidos por excluir_feed=true: ${metrics.total_excluir_feed_true}`);
+  console.log(`Sin fecha de cierre: ${metrics.total_sin_fecha_cierre}`);
+  console.log(`Score min/max/promedio: ${metrics.score_min}/${metrics.score_max}/${metrics.score_promedio}`);
 }
 
 main().catch(err => {
