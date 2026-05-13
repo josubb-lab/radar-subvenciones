@@ -33,9 +33,11 @@ async function upsertSubvenciones(subvenciones) {
   const CHUNK = 50;
   let insertadas = 0;
   let errores = 0;
-  for (let i = 0; i < rows.length; i += CHUNK) {
-    const chunk = rows.slice(i, i + CHUNK);
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/subvenciones?on_conflict=url`, {
+
+  const stripPlazoTexto = chunk => chunk.map(({ plazo_texto, ...rest }) => rest);
+
+  async function postChunk(chunk) {
+    return fetch(`${SUPABASE_URL}/rest/v1/subvenciones?on_conflict=url`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -45,13 +47,28 @@ async function upsertSubvenciones(subvenciones) {
       },
       body: JSON.stringify(chunk),
     });
+  }
+
+  for (let i = 0; i < rows.length; i += CHUNK) {
+    const chunk = rows.slice(i, i + CHUNK);
+    let res = await postChunk(chunk);
+
     if (!res.ok) {
       const msg = await res.text();
-      errores += 1;
-      console.error(`Error chunk ${i/CHUNK+1}: ${res.status} | ${msg.slice(0, 200)}`);
-    } else {
-      insertadas += chunk.length;
+      if (msg.includes("Could not find the 'plazo_texto' column")) {
+        console.warn(`Chunk ${i/CHUNK+1}: Supabase cache sin plazo_texto, reintentando sin ese campo.`);
+        res = await postChunk(stripPlazoTexto(chunk));
+      }
+
+      if (!res.ok) {
+        const retryMsg = await res.text();
+        errores += 1;
+        console.error(`Error chunk ${i/CHUNK+1}: ${res.status} | ${retryMsg.slice(0, 200)}`);
+        continue;
+      }
     }
+
+    insertadas += chunk.length;
   }
 
   if (errores > 0) {
