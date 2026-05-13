@@ -5,20 +5,20 @@ import { SITE } from '../lib/config'
 import NavBar from '../components/NavBar.astro'
 
 const pageTitle = 'Quiénes somos · Radar Subvenciones'
-const pageDesc  = 'Radar Subvenciones es un proyecto independiente que monitoriza diariamente las subvenciones y ayudas públicas en España para acercarlas a autónomos, empresas y entidades.'
+const pageDesc  = 'Radar Subvenciones, un producto de BenchDataLab, aplica datos, automatización y filtrado de señal para monitorizar ayudas y subvenciones con foco B2B.'
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
       '@type': 'Organization',
-      name: 'Radar Subvenciones',
+      name: 'BenchDataLab',
       url: SITE.siteUrl,
-      email: SITE.email,
+      email: 'josue@benchdatalab.com',
       description: pageDesc,
       foundingDate: '2024',
       areaServed: { '@type': 'Country', name: 'Spain' },
-      knowsAbout: ['Subvenciones públicas', 'Ayudas empresariales', 'BOE', 'BDNS'],
+      knowsAbout: ['Subvenciones públicas', 'Ayudas empresariales', 'Automatización de datos', 'BDNS', 'BOE'],
     },
     {
       '@type': 'WebPage',
@@ -38,7 +38,7 @@ const jsonLd = {
 
     <h1 class="text-3xl font-extrabold text-slate-100 mb-4">Quiénes somos</h1>
     <p class="text-slate-400 text-base mb-12 leading-relaxed">
-      Radar Subvenciones es un proyecto independiente cuya misión es hacer accesible la información sobre ayudas y subvenciones públicas en España. Creemos que el desconocimiento es la principal razón por la que miles de autónomos, empresas y entidades dejan de solicitar ayudas a las que tienen derecho.
+      Radar Subvenciones es un producto de BenchDataLab, un laboratorio independiente de datos. Nuestro trabajo consiste en monitorizar ayudas, automatizar procesos de lectura y filtrar señal útil para que asesorías, gestorías y despachos trabajen mejor las oportunidades de subvención.
     </p>
 
     <div class="space-y-10">
@@ -46,7 +46,7 @@ const jsonLd = {
       <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
         <h2 class="text-lg font-bold text-slate-100 mb-3">Nuestra misión</h2>
         <p class="text-slate-400 text-sm leading-relaxed">
-          Monitorizamos diariamente el Boletín Oficial del Estado (BOE), la Base de Datos Nacional de Subvenciones (BDNS) y los boletines autonómicos para extraer, clasificar y publicar todas las convocatorias de subvenciones y ayudas públicas en España. Nuestro objetivo es que ninguna convocatoria pase desapercibida.
+          Construimos productos especializados de datos que convierten publicaciones dispersas en información operativa. En Radar Subvenciones, eso significa transformar boletines, convocatorias y registros públicos en un feed comercial de ayudas filtradas para uso profesional B2B.
         </p>
       </div>
 
@@ -55,37 +55,37 @@ const jsonLd = {
         <ul class="space-y-3 text-sm text-slate-400">
           <li class="flex gap-3">
             <span class="text-emerald-400 font-bold shrink-0">01</span>
-            <span>Rastreamos diariamente a las 6:00 UTC más de 30 fuentes oficiales: BOE, BDNS y boletines de las 17 comunidades autónomas.</span>
+            <span>Monitorizamos BDNS, BOE y otras publicaciones relacionadas para detectar nuevas ayudas y cambios relevantes.</span>
           </li>
           <li class="flex gap-3">
             <span class="text-emerald-400 font-bold shrink-0">02</span>
-            <span>Clasificamos automáticamente cada convocatoria por sector (empresas, autónomos, cultura, innovación…) y por comunidad autónoma.</span>
+            <span>Aplicamos automatización y reglas de clasificación para ordenar la información por beneficiario, sector, ámbito y potencial comercial.</span>
           </li>
           <li class="flex gap-3">
             <span class="text-emerald-400 font-bold shrink-0">03</span>
-            <span>Marcamos como inactivas las convocatorias cuyo plazo de solicitud ha expirado para que siempre veas información vigente.</span>
+            <span>Filtramos señal frente a ruido: no basta con detectar convocatorias, hay que priorizar las que realmente sirven a una cartera de clientes.</span>
           </li>
           <li class="flex gap-3">
             <span class="text-emerald-400 font-bold shrink-0">04</span>
-            <span>Enlazamos siempre a la fuente oficial original. No somos intermediarios: toda la información la puedes verificar en el organismo convocante.</span>
+            <span>Enlazamos siempre a la fuente oficial original para validación y tramitación. El producto es la capa de datos y filtrado, no la sustitución de la fuente pública.</span>
           </li>
         </ul>
       </div>
 
       <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
-        <h2 class="text-lg font-bold text-slate-100 mb-3">Independencia y transparencia</h2>
+        <h2 class="text-lg font-bold text-slate-100 mb-3">Producto especializado B2B</h2>
         <p class="text-slate-400 text-sm leading-relaxed">
-          Somos un proyecto independiente sin vinculación con ningún organismo público ni gestoría. No cobramos comisiones por la información que publicamos. Nos financiamos a través de publicidad contextual y acuerdos con gestores especializados que compartimos como recomendación, nunca como obligación.
+          Radar Subvenciones no pretende ser un portal genérico más. Está orientado a asesorías, gestorías, consultoras y despachos que necesitan ahorrar tiempo, detectar oportunidades antes y trabajar con datos filtrados en lugar de boletines sin procesar.
         </p>
       </div>
 
       <div class="rounded-xl border border-emerald-800/40 bg-emerald-950/20 p-6">
         <h2 class="text-lg font-bold text-slate-100 mb-3">Contacto</h2>
         <p class="text-slate-400 text-sm mb-4">
-          Para consultas, correcciones o colaboraciones:
+          Para consultas, demos o colaboraciones sobre Radar Subvenciones:
         </p>
-        <a href={`mailto:${SITE.email}`} class="text-emerald-400 hover:underline text-sm font-semibold">
-          {SITE.email}
+        <a href="mailto:josue@benchdatalab.com" class="text-emerald-400 hover:underline text-sm font-semibold">
+          josue@benchdatalab.com
         </a>
       </div>
 
@@ -94,7 +94,7 @@ const jsonLd = {
 
   <footer class="border-t border-slate-800/60 mt-10">
     <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
-      <p>© {new Date().getFullYear()} Radar Subvenciones · Proyecto independiente</p>
+      <p>© {new Date().getFullYear()} Radar Subvenciones · Un producto de BenchDataLab</p>
       <nav class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
         <a href="/origen-datos"        class="hover:text-slate-400 transition-colors">Fuentes</a>
         <a href="/aviso-legal"         class="hover:text-slate-400 transition-colors">Aviso legal</a>

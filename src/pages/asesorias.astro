@@ -28,12 +28,13 @@ const jsonLd = {
 
   <main class="max-w-5xl mx-auto px-4 py-10 space-y-10">
     <section class="rounded-3xl border border-slate-800 bg-gradient-to-br from-emerald-950/40 via-slate-900 to-slate-950 p-8 lg:p-10">
-      <p class="text-emerald-400 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Producto B2B</p>
+      <p class="text-emerald-400 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Radar Subvenciones · Un producto de BenchDataLab</p>
+      <p class="text-xs text-slate-500 mb-3">BenchDataLab — laboratorio independiente de datos</p>
       <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-50 leading-tight mb-4">
         Feed CSV/Excel de subvenciones filtradas para asesorías y gestorías
       </h1>
       <p class="text-slate-300 text-lg max-w-3xl mb-6">
-        Recibe una selección comercial de ayudas para pymes, autónomos, empresas, empleo, contratación, comercio local y digitalización. Menos boletín bruto, más oportunidades accionables para tu cartera.
+        Recibe una selección comercial de ayudas para pymes, autónomos, empresas, empleo, contratación, comercio local y digitalización. Datos monitorizados, filtrado de señal y automatización para ahorrar tiempo a tu despacho.
       </p>
       <div class="flex flex-wrap gap-3">
         <a
@@ -54,7 +55,7 @@ const jsonLd = {
     <section class="grid lg:grid-cols-3 gap-4">
       <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
         <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Qué entregamos</p>
-        <p class="text-sm text-slate-300">CSV o Excel con oportunidades filtradas, beneficiario objetivo, sector, ámbito, score comercial y enlace oficial.</p>
+        <p class="text-sm text-slate-300">CSV o Excel con oportunidades filtradas, beneficiario objetivo, sector, ámbito, score comercial, motivo y enlace oficial.</p>
       </div>
       <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
         <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Qué ahorra</p>
@@ -71,15 +72,15 @@ const jsonLd = {
       <div class="grid md:grid-cols-4 gap-4 text-sm text-slate-300">
         <div>
           <p class="text-emerald-400 font-semibold mb-1">1. Detección</p>
-          <p>Monitorizamos BDNS, BOE y publicaciones relacionadas para localizar nuevas convocatorias.</p>
+          <p>Monitorizamos BDNS, BOE y publicaciones relacionadas para localizar nuevas convocatorias con valor comercial.</p>
         </div>
         <div>
           <p class="text-emerald-400 font-semibold mb-1">2. Filtro comercial</p>
-          <p>Quitamos ruido y priorizamos empleo, autónomos, empresas, comercio, digitalización e innovación aplicable.</p>
+          <p>Quitamos ruido y priorizamos empleo, autónomos, empresas, comercio local, digitalización e innovación aplicable.</p>
         </div>
         <div>
           <p class="text-emerald-400 font-semibold mb-1">3. Entrega</p>
-          <p>Recibes un CSV o Excel claro, con prioridad, motivo comercial y enlace oficial.</p>
+          <p>Recibes un CSV o Excel claro, con prioridad, motivo comercial, beneficiario, ámbito y enlace oficial.</p>
         </div>
         <div>
           <p class="text-emerald-400 font-semibold mb-1">4. Activación</p>
@@ -129,8 +130,8 @@ const jsonLd = {
     <section id="form-lead-asesoria" class="grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
       <div class="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
         <p class="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-3">Pide una muestra</p>
-        <h2 class="text-2xl font-bold text-slate-100 mb-3">Déjanos tus datos y te enviamos una muestra comercial del feed</h2>
-        <p class="text-sm text-slate-400 mb-6">Te mandamos una muestra en CSV/Excel para que evalúes si encaja con tu cartera de clientes.</p>
+        <h2 class="text-2xl font-bold text-slate-100 mb-3">Déjanos tus datos y te enviamos una muestra de Radar Subvenciones</h2>
+        <p class="text-sm text-slate-400 mb-6">Te mandamos una muestra en CSV/Excel para que evalúes si el feed encaja con tu cartera de clientes y tu forma de trabajar.</p>
 
         <form id="lead-asesoria-form" class="space-y-4">
           <div class="grid sm:grid-cols-2 gap-4">
@@ -185,7 +186,7 @@ const jsonLd = {
           <button type="submit" class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold transition-colors">
             Pedir muestra del feed
           </button>
-          <p class="text-xs text-slate-500">Usaremos estos datos solo para responder a tu solicitud y enviarte la muestra. Sin listas masivas ni cesión a terceros.</p>
+          <p class="text-xs text-slate-500">Usaremos estos datos solo para responder a tu solicitud y enviarte la muestra. Contacto profesional: josue@benchdatalab.com.</p>
           <p id="lead-asesoria-status" class="text-sm text-slate-400"></p>
         </form>
       </div>
@@ -205,10 +206,26 @@ const jsonLd = {
             <p class="font-semibold text-slate-100">3. Ajustamos cobertura</p>
             <p class="text-slate-400 mt-1">Si tiene sentido, definimos frecuencia, comunidades y sectores útiles para tu cartera.</p>
           </div>
+          <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+            <p class="font-semibold text-slate-100">Contacto directo</p>
+            <p class="text-slate-400 mt-1">josue@benchdatalab.com</p>
+          </div>
         </div>
       </div>
     </section>
   </main>
+
+  <footer class="border-t border-slate-800/60 mt-10">
+    <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
+      <p>© {new Date().getFullYear()} Radar Subvenciones · Un producto de BenchDataLab</p>
+      <nav class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+        <a href="/origen-datos"        class="hover:text-slate-400 transition-colors">Fuentes</a>
+        <a href="/aviso-legal"         class="hover:text-slate-400 transition-colors">Aviso legal</a>
+        <a href="/politica-privacidad" class="hover:text-slate-400 transition-colors">Privacidad</a>
+        <a href="/politica-cookies"    class="hover:text-slate-400 transition-colors">Cookies</a>
+      </nav>
+    </div>
+  </footer>
 
   <script>
     const form = document.getElementById('lead-asesoria-form');
