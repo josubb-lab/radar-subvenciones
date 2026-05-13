@@ -179,6 +179,7 @@ const jsonLd = {
         </div>
         <form id="lead-home-form" class="grid sm:grid-cols-2 gap-4">
           <input type="hidden" name="tipo_despacho" value="Lead desde home" />
+          <input type="hidden" name="clientes" value="" />
           <label class="block sm:col-span-1">
             <span class="text-xs text-slate-400 mb-1 block">Nombre</span>
             <input name="nombre" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500" />
@@ -232,7 +233,7 @@ const jsonLd = {
     async function bindLeadForm(formId, statusId) {
       const form = document.getElementById(formId);
       const status = document.getElementById(statusId);
-      if (!form || !status) return;
+      if (!(form instanceof HTMLFormElement) || !(status instanceof HTMLElement)) return;
 
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -248,8 +249,9 @@ const jsonLd = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
           });
-          const data = await res.json();
+          const data = await res.json().catch(() => ({}));
           if (!res.ok) throw new Error(data.error || 'No se pudo enviar');
+          if (data.ok !== true) throw new Error('Respuesta inesperada del servidor');
           form.reset();
           if (data.fallback) {
             status.innerHTML = 'No hemos podido registrar el formulario automaticamente. Escribenos a <a href="mailto:josue@benchdatalab.com" class="text-emerald-400 underline">josue@benchdatalab.com</a> y te enviamos la muestra.';

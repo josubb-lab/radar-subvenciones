@@ -261,39 +261,45 @@ const jsonLd = {
   </footer>
 
   <script>
-    const form = document.getElementById('lead-asesoria-form');
-    const status = document.getElementById('lead-asesoria-status');
+    async function bindLeadForm(formId, statusId) {
+      const form = document.getElementById(formId);
+      const status = document.getElementById(statusId);
+      if (!(form instanceof HTMLFormElement) || !(status instanceof HTMLElement)) return;
 
-    form?.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      status.textContent = 'Enviando...';
-      status.className = 'text-sm text-slate-400';
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        status.textContent = 'Enviando...';
+        status.className = 'text-sm text-slate-400';
 
-      const formData = new FormData(form);
-      const payload = Object.fromEntries(formData.entries());
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
 
-      try {
-        const res = await fetch('/api/lead-asesoria', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        const data = await res.json();
+        try {
+          const res = await fetch('/api/lead-asesoria', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json().catch(() => ({}));
 
-        if (!res.ok) throw new Error(data.error || 'No se pudo enviar');
+          if (!res.ok) throw new Error(data.error || 'No se pudo enviar');
+          if (data.ok !== true) throw new Error('Respuesta inesperada del servidor');
 
-        form.reset();
-        if (data.fallback) {
-          status.innerHTML = 'No hemos podido registrar el formulario automaticamente. Escribenos a <a href="mailto:josue@benchdatalab.com" class="text-emerald-400 underline">josue@benchdatalab.com</a> y te enviamos la muestra.';
-          status.className = 'text-sm text-amber-300';
-        } else {
-          status.textContent = 'Recibido. Te contactaremos con una muestra del feed.';
-          status.className = 'text-sm text-emerald-400';
+          form.reset();
+          if (data.fallback) {
+            status.innerHTML = 'No hemos podido registrar el formulario automaticamente. Escribenos a <a href="mailto:josue@benchdatalab.com" class="text-emerald-400 underline">josue@benchdatalab.com</a> y te enviamos la muestra.';
+            status.className = 'text-sm text-amber-300';
+          } else {
+            status.textContent = 'Recibido. Te contactaremos con una muestra del feed.';
+            status.className = 'text-sm text-emerald-400';
+          }
+        } catch (error) {
+          status.textContent = error instanceof Error ? error.message : 'Ha fallado el envío';
+          status.className = 'text-sm text-rose-400';
         }
-      } catch (error) {
-        status.textContent = error instanceof Error ? error.message : 'Ha fallado el envío';
-        status.className = 'text-sm text-rose-400';
-      }
-    });
+      });
+    }
+
+    bindLeadForm('lead-asesoria-form', 'lead-asesoria-status');
   </script>
 </Layout>
