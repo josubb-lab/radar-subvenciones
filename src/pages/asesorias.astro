@@ -283,8 +283,13 @@ const jsonLd = {
         if (!res.ok) throw new Error(data.error || 'No se pudo enviar');
 
         form.reset();
-        status.textContent = 'Recibido. Te contactaremos con una muestra del feed.';
-        status.className = 'text-sm text-emerald-400';
+        if (data.fallback) {
+          status.innerHTML = 'No hemos podido registrar el formulario automaticamente. Escribenos a <a href="mailto:josue@benchdatalab.com" class="text-emerald-400 underline">josue@benchdatalab.com</a> y te enviamos la muestra.';
+          status.className = 'text-sm text-amber-300';
+        } else {
+          status.textContent = 'Recibido. Te contactaremos con una muestra del feed.';
+          status.className = 'text-sm text-emerald-400';
+        }
       } catch (error) {
         status.textContent = error instanceof Error ? error.message : 'Ha fallado el envío';
         status.className = 'text-sm text-rose-400';

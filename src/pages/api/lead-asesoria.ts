@@ -1,11 +1,17 @@
 import type { APIRoute } from 'astro'
 import { createClient } from '@supabase/supabase-js'
 
+const FALLBACK_EMAIL = 'josue@benchdatalab.com'
+
 function json(body: Record<string, unknown>, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { 'Content-Type': 'application/json' },
   })
+}
+
+function fallbackResponse() {
+  return json({ ok: true, fallback: true, contact_email: FALLBACK_EMAIL })
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -31,10 +37,11 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: 'Email no válido' }, 400)
   }
 
-  const supabase = createClient(
-    import.meta.env.PUBLIC_SUPABASE_URL,
-    import.meta.env.PUBLIC_SUPABASE_KEY,
-  )
+  const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL
+  const supabaseKey = import.meta.env.PUBLIC_SUPABASE_KEY
+  if (!supabaseUrl || !supabaseKey) return fallbackResponse()
+
+  const supabase = createClient(supabaseUrl, supabaseKey)
 
   const lead = {
     nombre,
@@ -46,23 +53,45 @@ export const POST: APIRoute = async ({ request }) => {
     origen: 'web-b2b',
   }
 
-  const { error } = await supabase
-    .from('leads_asesorias')
-    .insert(lead)
+  try {
+    const { error } = await supabase
+      .from('leads_asesorias')
+      .insert(lead)
 
-  if (!error) return json({ ok: true })
+    if (!error) return json({ ok: true })
 
-  // Fallback operativo para no perder el contacto si la tabla nueva aun no existe.
-  if (error.code === '42P01') {
-    const { error: fallbackError } = await supabase
-      .from('suscriptores')
-      .insert({ email })
+    // Duplicado: tratamos la solicitud como recibida.
+    if (error.code === '23505') return json({ ok: true, duplicate: true })
 
-    if (!fallbackError || fallbackError.code === '23505') {
-      return json({ ok: true, fallback: true })
+    // Si falla la tabla específica, intentamos un fallback blando en suscriptores.
+    if (error.code === '42P01') {
+      const { error: fallbackError } = await supabase
+        .from('suscriptores')
+        .insert({ email })
+
+      if (!fallbackError || fallbackError.code === '23505') {
+        return fallbackResponse()
+      }
     }
-  }
 
-  if (error.code === '23505') return json({ ok: true, duplicate: true })
-  return json({ error: error.message, code: error.code }, 500)
+    // Cualquier problema operativo de Supabase no debe romper el formulario.
+    const message = String(error.message || '').toLowerCase()
+    const isOperationalFailure =
+      error.code !== '23505' &&
+      (
+        error.code === '42P01' ||
+        message.includes('schema cache') ||
+        message.includes('could not find the table') ||
+        message.includes('relation') ||
+        message.includes('does not exist') ||
+        message.includes('failed to reach') ||
+        message.includes('network') ||
+        message.includes('timeout')
+      )
+
+    if (isOperationalFailure) return fallbackResponse()
+    return fallbackResponse()
+  } catch {
+    return fallbackResponse()
+  }
 }
